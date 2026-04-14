@@ -29,10 +29,10 @@ Route::controller(InquiryController::class)
         // Login-protected routes
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', 'store');
+            Route::get('/me', 'myInquiries');
+
             Route::put('/{inquiry}', 'update');
             Route::delete('/{inquiry}', 'destroy');
-
-            Route::get('/me', 'myInquiries');
         });
     });
 
@@ -46,10 +46,10 @@ Route::controller(AnswerController::class)
         // Login-protected routes
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', 'store');
+            Route::get('/me', 'myAnswers');
+
             Route::put('/{answer}', 'update');
             Route::delete('/{answer}', 'destroy');
-
-            Route::get('/me', 'myAnswers');
         });
     });
 
