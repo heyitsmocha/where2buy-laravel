@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -53,3 +54,10 @@ Route::controller(AnswerController::class)
         });
     });
 
+Route::controller(ItemController::class)
+    ->prefix('items')
+    ->group(function () {
+        Route::get('/suggestions', 'suggestions');
+        Route::get('/{item}', 'show');
+        Route::get('/{item}/nearby', 'nearby');
+    });
