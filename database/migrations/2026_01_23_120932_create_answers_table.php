@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignIdFor(Item::class)->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(Inquiry::class)->constrained()->cascadeOnDelete();
 
-            $table->geometry('location', subtype: 'point');
+            $table->geometry('location', subtype: 'point', srid: 4326);
             $table->string('store_name');
             $table->string('store_address')->nullable();
             $table->string('additional_info')->nullable();

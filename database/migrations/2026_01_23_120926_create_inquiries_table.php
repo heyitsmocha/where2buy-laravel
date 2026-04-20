@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Item::class)->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(User::class)->nullable()->constrained()->nullOnDelete();
 
-            $table->geometry('location', subtype: 'point');
+            $table->geometry('location', subtype: 'point', srid: 4326);
             $table->unsignedMediumInteger('search_radius_meters'); // Max 80km if not anywhere
 
             // flags
