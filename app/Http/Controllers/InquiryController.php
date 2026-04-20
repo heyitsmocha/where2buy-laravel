@@ -4,16 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Inquiry;
 use App\Models\Item;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class InquiryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a list of inquiries that are near the user's location.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $request->validate([
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ]);
+        $latitude = $request->query('latitude');
+        $longitude = $request->query('longitude');
+        // $country = $request->query('country');
+
+        $country = 'USA'; // Example country
+
+        return Inquiry::where(
+            function (Builder $query) use ($latitude, $longitude, $country) {
+                $query->where('anywhere', true)
+                      ->orWhereRaw("ST_Distance_Sphere(location, ST_GeomFromText('POINT($latitude $longitude)', 4326)) <= search_radius_meters");
+            }
+        )->get();
     }
 
     /**
