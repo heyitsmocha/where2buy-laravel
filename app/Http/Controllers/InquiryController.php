@@ -24,12 +24,22 @@ class InquiryController extends Controller
 
         $country = 'USA'; // Example country
 
-        return Inquiry::where(
-            function (Builder $query) use ($latitude, $longitude, $country) {
-                $query->where('anywhere', true)
-                      ->orWhereRaw("ST_Distance_Sphere(location, ST_GeomFromText('POINT($latitude $longitude)', 4326)) <= search_radius_meters");
-            }
-        )->get();
+        $inquiries = Inquiry::with('item')
+            ->where(
+                function (Builder $query) use ($latitude, $longitude, $country) {
+                    $query->where('anywhere', true)
+                        ->orWhereRaw("ST_Distance_Sphere(location, ST_GeomFromText('POINT($latitude $longitude)', 4326)) <= search_radius_meters");
+                }
+            )
+            ->get();
+
+        return $inquiries->map(function ($inquiry) {
+            return [
+                'id' => $inquiry->id,
+                'item_name' => $inquiry->item->name,
+                'item_description' => $inquiry->item->description ?? null,
+            ];
+        });
     }
 
     /**
