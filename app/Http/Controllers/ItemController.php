@@ -53,9 +53,7 @@ class ItemController extends Controller
             return ['id' => $item->id, 'name' => $item->name];
         });
 
-        return response()->json([
-            'suggestions' => $suggestions,
-        ]);
+        return $suggestions;
     }
 
     public function nearby(Request $request, Item $item)
