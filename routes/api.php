@@ -25,7 +25,6 @@ Route::controller(InquiryController::class)
     ->prefix('inquiries')
     ->group(function () {
         Route::get('/', 'index');
-        Route::get('/{inquiry}', 'show');
 
         // Login-protected routes
         Route::middleware('auth:sanctum')->group(function () {
@@ -35,6 +34,8 @@ Route::controller(InquiryController::class)
             Route::put('/{inquiry}', 'update');
             Route::delete('/{inquiry}', 'destroy');
         });
+
+        Route::get('/{inquiry}', 'show');
     });
 
 // Answers
@@ -42,7 +43,6 @@ Route::controller(AnswerController::class)
     ->prefix('answers')
     ->group(function () {
         Route::get('/', 'index');
-        Route::get('/{answer}', 'show');
 
         // Login-protected routes
         Route::middleware('auth:sanctum')->group(function () {
@@ -52,6 +52,8 @@ Route::controller(AnswerController::class)
             Route::put('/{answer}', 'update');
             Route::delete('/{answer}', 'destroy');
         });
+
+        Route::get('/{answer}', 'show');
     });
 
 Route::controller(ItemController::class)
