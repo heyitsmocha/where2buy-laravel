@@ -115,6 +115,18 @@ class InquiryController extends Controller
      */
     public function myInquiries(Request $request)
     {
-        return $request->user()->inquiries()->get();
+        return $request->user()->inquiries()->get()->map(function ($inquiry) {
+            return [
+                'id' => $inquiry->id,
+                'created_at' => $inquiry->created_at,
+                'item_name' => $inquiry->item->name,
+                'item_description' => $inquiry->item->description ?? null,
+                'location' => [
+                    'latitude' => $inquiry->location->latitude,
+                    'longitude' => $inquiry->location->longitude,
+                ],
+                'search_radius_meters' => $inquiry->search_radius_meters,
+            ];
+        });
     }
 }
