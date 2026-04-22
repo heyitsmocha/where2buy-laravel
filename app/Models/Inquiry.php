@@ -43,6 +43,7 @@ class Inquiry extends Model
      */
     public function scopeWhereLatLngWithinDistance(Builder $query, $latitude, $longitude): Builder
     {
+        // Set the wkt here because we need to pass it as a parameter to the raw query, and we can't bind parameters inside quotes
         $wkt = "POINT($latitude $longitude)";
         return $query->whereRaw("ST_Distance_Sphere(location, ST_GeomFromText(?, 4326)) <= search_radius_meters", [$wkt]);
     }
