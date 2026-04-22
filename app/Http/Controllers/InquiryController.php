@@ -110,6 +110,10 @@ class InquiryController extends Controller
         return Inquiry::destroy($inquiry->id);
     }
 
+    public function answers(Inquiry $inquiry) {
+        return $inquiry->answers;
+    }
+
     /**
      * Get inquiries made by the authenticated user.
      */

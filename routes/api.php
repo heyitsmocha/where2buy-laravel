@@ -36,6 +36,7 @@ Route::controller(InquiryController::class)
         });
 
         Route::get('/{inquiry}', 'show');
+        Route::get('/{inquiry}/answers', 'answers');
     });
 
 // Answers
