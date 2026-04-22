@@ -56,7 +56,7 @@ class InquiryController extends Controller
             'same_country_only' => 'boolean',
 
             // If item_id is not provided, name is required to create/find item
-            'item_id' => 'required_without:name|integer',
+            'item_id' => 'required_without:name|integer|exists:items,id',
             'name' => 'required_without:item_id|string|max:255',
             'description' => 'nullable|string',
         ]);
