@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Inquiry;
 use App\Models\Item;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class InquiryController extends Controller
@@ -24,13 +23,9 @@ class InquiryController extends Controller
 
         $country = 'USA'; // Example country
 
-        $inquiries = Inquiry::with('item')
-            ->where(
-                function (Builder $query) use ($latitude, $longitude, $country) {
-                    $query->where('anywhere', true)
-                        ->orWhereRaw("ST_Distance_Sphere(location, ST_GeomFromText('POINT($latitude $longitude)', 4326)) <= search_radius_meters");
-                }
-            )
+        $inquiries = Inquiry::query()
+            ->whereLatLngWithinDistance($latitude, $longitude)
+            ->with('item')
             ->get();
 
         return $inquiries->map(function ($inquiry) {

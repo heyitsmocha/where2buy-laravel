@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
@@ -35,5 +36,14 @@ class Inquiry extends Model
     public function answers()
     {
         return $this->hasMany(Answer::class);
+    }
+
+    /**
+     * Scope a query to only include inquiries within the search radius of the given latitude and longitude.
+     */
+    public function scopeWhereLatLngWithinDistance(Builder $query, $latitude, $longitude): Builder
+    {
+        $wkt = "POINT($latitude $longitude)";
+        return $query->whereRaw("ST_Distance_Sphere(location, ST_GeomFromText(?, 4326)) <= search_radius_meters", [$wkt]);
     }
 }
