@@ -44,8 +44,6 @@ Route::get('inquiries/{inquiry}/answers', [AnswerController::class, 'indexByInqu
 Route::controller(AnswerController::class)
     ->prefix('answers')
     ->group(function () {
-        Route::get('/', 'index');
-
         // Login-protected routes
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', 'store');

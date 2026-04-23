@@ -8,32 +8,14 @@ use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
-    /**
-     * Get the list of items that are nearby
-     */
-    public function index(Request $request)
-    {
-        $category_id = $request->query('category_id');
-
-        $current_input = $request->query('current_input');
-
-        $items = DB::table('items');
-        if ($category_id) {
-            $items->where('category_id', $category_id);
-        }
-
-        if ($current_input) {
-            $items->whereLike(['name', 'description'], "%$current_input%");
-        }
-
-        return $items->get();
-    }
-
     public function show(Item $item)
     {
         return $item;
     }
 
+    /**
+     * Get item suggestions based on the input query.
+     */
     public function suggestions(Request $request)
     {
         $input = $request->query('input');
