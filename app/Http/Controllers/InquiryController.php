@@ -24,7 +24,7 @@ class InquiryController extends Controller
         $country = 'USA'; // Example country
 
         $inquiries = Inquiry::query()
-            ->whereLatLngWithinDistance($latitude, $longitude)
+            ->whereLatLngWithinSearchRadius($latitude, $longitude)
             ->with('item')
             ->get();
 

@@ -41,7 +41,7 @@ class Inquiry extends Model
     /**
      * Scope a query to only include inquiries within the search radius of the given latitude and longitude.
      */
-    public function scopeWhereLatLngWithinDistance(Builder $query, $latitude, $longitude): Builder
+    public function scopeWhereLatLngWithinSearchRadius(Builder $query, $latitude, $longitude): Builder
     {
         // Set the wkt here because we need to pass it as a parameter to the raw query, and we can't bind parameters inside quotes
         $wkt = "POINT($latitude $longitude)";
