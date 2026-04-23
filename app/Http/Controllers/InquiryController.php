@@ -28,13 +28,7 @@ class InquiryController extends Controller
             ->with('item')
             ->get();
 
-        return $inquiries->map(function ($inquiry) {
-            return [
-                'id' => $inquiry->id,
-                'item_name' => $inquiry->item->name,
-                'item_description' => $inquiry->item->description ?? null,
-            ];
-        });
+        return $inquiries->toResourceCollection();
     }
 
     /**
@@ -77,7 +71,7 @@ class InquiryController extends Controller
             'anywhere' => $request->input('anywhere', false),
             'same_country_only' => $request->input('same_country_only', true)
         ]);
-        return $inquiry;
+        return $inquiry->toResource();
     }
 
     /**
@@ -85,7 +79,7 @@ class InquiryController extends Controller
      */
     public function show(Inquiry $inquiry)
     {
-        return $inquiry;
+        return $inquiry->toResource();
     }
 
     /**
@@ -94,7 +88,7 @@ class InquiryController extends Controller
     public function update(Request $request, Inquiry $inquiry)
     {
         $inquiry->update($request->all());
-        return $inquiry;
+        return $inquiry->toResource();
     }
 
     /**
@@ -114,18 +108,6 @@ class InquiryController extends Controller
      */
     public function myInquiries(Request $request)
     {
-        return $request->user()->inquiries()->get()->map(function ($inquiry) {
-            return [
-                'id' => $inquiry->id,
-                'created_at' => $inquiry->created_at,
-                'item_name' => $inquiry->item->name,
-                'item_description' => $inquiry->item->description ?? null,
-                'location' => [
-                    'latitude' => $inquiry->location->latitude,
-                    'longitude' => $inquiry->location->longitude,
-                ],
-                'search_radius_meters' => $inquiry->search_radius_meters,
-            ];
-        });
+        return $request->user()->inquiries()->get()->toResourceCollection();
     }
 }
