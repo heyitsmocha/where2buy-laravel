@@ -55,25 +55,4 @@ class ItemController extends Controller
 
         return response()->json(['data' => $suggestions]);
     }
-
-    public function nearby(Request $request, Item $item)
-    {
-        $request->validate([
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'range' => 'required|numeric',
-        ]);
-
-        $latitude = $request->query('latitude');
-        $longitude = $request->query('longitude');
-        $range = $request->query('range');
-
-        // Find answers for the item that are within the specified range
-        $answers = DB::table('answers')
-            ->where('item_id', $item->id)
-            ->whereRaw("ST_Distance_Sphere(location, ST_MakePoint(?, ?)) <= ?", [$longitude, $latitude, $range])
-            ->get();
-
-        return $answers;
-    }
 }

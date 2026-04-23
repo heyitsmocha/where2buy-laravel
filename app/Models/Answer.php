@@ -42,7 +42,7 @@ class Answer extends Model
     /**
      * Scope a query to only include answers within the given search radius of the given latitude and longitude.
      */
-    public function scopeWhereLatLngWithinDistance(Builder $query, $latitude, $longitude, $searchRadius): Builder
+    public function scopeWhereLatLngWithinSearchRadius(Builder $query, $latitude, $longitude, $searchRadius): Builder
     {
         // Set the wkt here because we need to pass it as a parameter to the raw query, and we can't bind parameters inside quotes
         $wkt = "POINT($latitude $longitude)";

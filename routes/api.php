@@ -36,8 +36,9 @@ Route::controller(InquiryController::class)
         });
 
         Route::get('/{inquiry}', 'show');
-        Route::get('/{inquiry}/answers', 'answers');
     });
+// Outside of the InquiryController group since it uses a different controller
+Route::get('inquiries/{inquiry}/answers', [AnswerController::class, 'indexByInquiry']);
 
 // Answers
 Route::controller(AnswerController::class)
@@ -62,5 +63,7 @@ Route::controller(ItemController::class)
     ->group(function () {
         Route::get('/suggestions', 'suggestions');
         Route::get('/{item}', 'show');
-        Route::get('/{item}/nearby', 'nearby');
     });
+
+// Outside of the ItemController group since it uses a different controller
+Route::get('/items/{item}/nearby-answers', [AnswerController::class, 'indexByProximity']);
