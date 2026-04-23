@@ -11,7 +11,7 @@ class InquiryController extends Controller
     /**
      * Display a list of inquiries that are near the user's location.
      */
-    public function index(Request $request)
+    public function indexByProximity(Request $request)
     {
         $request->validate([
             'latitude' => 'required|numeric|between:-90,90',

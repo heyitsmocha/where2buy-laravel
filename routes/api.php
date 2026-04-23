@@ -24,7 +24,7 @@ Route::controller(UserController::class)->group(function () {
 Route::controller(InquiryController::class)
     ->prefix('inquiries')
     ->group(function () {
-        Route::get('/', 'index');
+        Route::get('/', 'indexByProximity');
 
         // Login-protected routes
         Route::middleware('auth:sanctum')->group(function () {
