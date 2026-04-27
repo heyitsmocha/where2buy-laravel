@@ -32,7 +32,7 @@ class ItemController extends Controller
 
         // Return only names and ids for suggestions, or empty array if no matches
         $suggestions = $suggestions->map(function ($item) {
-            return ['id' => $item->id, 'name' => $item->name];
+            return ['item_id' => $item->id, 'item_name' => $item->name];
         });
 
         return response()->json(['data' => $suggestions]);
