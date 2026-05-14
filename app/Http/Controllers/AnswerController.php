@@ -50,7 +50,7 @@ class AnswerController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'store_name' => 'required|string|max:255',
-            'store_address' => 'string|max:500',
+            'store_address' => 'nullable|string|max:500',
             'additional_info' => 'nullable|string|max:1000',
         ]);
 
@@ -89,7 +89,7 @@ class AnswerController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'store_name' => 'required|string|max:255',
-            'store_address' => 'required|string|max:500',
+            'store_address' => 'nullable|string|max:500',
             'additional_info' => 'nullable|string|max:1000',
         ]);
 
