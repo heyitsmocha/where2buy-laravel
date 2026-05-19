@@ -16,6 +16,7 @@
         "vite": "^8.0.13"
     },
     "dependencies": {
-        "@inertiajs/react": "^3.1.1"
+        "@inertiajs/react": "^3.1.1",
+        "react-openlayers": "^10.5.1"
     }
 }
