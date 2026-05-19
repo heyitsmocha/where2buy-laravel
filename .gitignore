@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Laravel Boost
+/AGENTS.md
+/boost.json
+/.github
