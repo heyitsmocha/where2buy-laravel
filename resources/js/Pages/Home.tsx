@@ -5,7 +5,12 @@ import  OSM from 'ol/source/OSM.js';
 import { fromLonLat } from 'ol/proj.js';
 import 'react-openlayers/dist/index.css';
 
-export default function Home() {
+type HomeProps = {
+    coordinates: [number, number];
+    zoom: number;
+}
+
+export default function Home({ coordinates, zoom }: HomeProps) {
     return (
         <Layout>
             <Head title="Home" />
@@ -14,7 +19,7 @@ export default function Home() {
                 <div id="map" className="w-full h-96 mt-4">
                     <Map>
                         <TileLayer source={new OSM()} />
-                        <View center={fromLonLat([101.71161131671826, 3.1574007829410458])} zoom={18} />
+                        <View center={fromLonLat(coordinates)} zoom={zoom} />
                     </Map>
                 </div>
             </div>
