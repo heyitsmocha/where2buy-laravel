@@ -1,8 +1,8 @@
 import {Head} from '@inertiajs/react';
-import Layout from '../Layouts/Layout';
+import Layout from '../Layouts/Layout.js';
 import { Map, View, TileLayer } from 'react-openlayers';
-import { OSM } from 'ol/source';
-import { fromLonLat } from 'ol/proj';
+import  OSM from 'ol/source/OSM.js';
+import { fromLonLat } from 'ol/proj.js';
 import 'react-openlayers/dist/index.css';
 
 export default function Home() {
