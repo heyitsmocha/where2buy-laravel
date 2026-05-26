@@ -65,3 +65,4 @@ Route::controller(ItemController::class)
 
 // Outside of the ItemController group since it uses a different controller
 Route::get('/items/{item}/nearby-answers', [AnswerController::class, 'indexByProximity']);
+Route::get('/items/{item}/answers', [AnswerController::class, 'indexByItem']);

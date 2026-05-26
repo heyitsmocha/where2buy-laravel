@@ -9,6 +9,15 @@ use Illuminate\Http\Request;
 
 class AnswerController extends Controller
 {
+    public function indexByItem(Item $item) {
+        $answers = Answer::query()
+            ->whereIn('inquiry_id', $item->inquiries()->pluck('id'))
+            ->with('inquiry')
+            ->get();
+
+        return $answers->toResourceCollection();
+    }
+
     /**
      * Display the answers for a given inquiry.
      */
