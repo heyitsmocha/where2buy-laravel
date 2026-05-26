@@ -23,7 +23,7 @@ Route::get('/', function (Request $request) {
         $data = $response->json();
 
         if ($data['status'] === 'success') {
-            $coordinates = [$data['lon'], $data['lat']];
+            $coordinates = [$data['lat'], $data['lon']];
             $zoom = 16; // Closer zoom for user location
 
             return Inertia::render('Home', [
