@@ -2,7 +2,7 @@ export interface Inquiry {
     id: number;
     user_id: number;
     item_id: number;
-    location: [number, number];
+    location: LatLng;
     search_radius_meters: number;
 }
 
@@ -16,7 +16,9 @@ export interface Answer {
     id: number;
     inquiry_id: number;
     user_id: number;
-    location: [number, number];
+    location: LatLng;
     store_name: string;
     store_address?: string;
 }
+
+export type LatLng = [latitude: number, longitude: number];
