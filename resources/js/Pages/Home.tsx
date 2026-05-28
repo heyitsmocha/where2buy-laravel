@@ -1,19 +1,23 @@
 import { Head } from '@inertiajs/react';
 import Layout from '../Layouts/Layout.js';
-import MapComponent from '../Components/MapComponent.js';
 
 import { useState } from 'react';
 import useDebounce from 'react-debounced';
 
 import { apiGet } from '../util';
+import { type Answer, type LatLng } from '@/Types/types.js';
+
+
+import MapComponent from '../Components/MapComponent.js';
+import { Card } from '@/Components/ui/card.js';
 import { Button } from '@/Components/ui/button.js';
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from '@/Components/ui/combobox.js';
 
 import { Map } from 'leaflet';
 
 type HomeProps = {
-  coordinates: [number, number];
-  zoom: number;
+  initialCoordinates: LatLng;
+  initialZoom: number;
 }
 
 type Suggestion = {
@@ -26,9 +30,9 @@ type ItemSuggestionDto = {
   item_name: string;
 }
 
-export default function Home({ coordinates, zoom }: HomeProps) {
-  const [circle, setCircle] = useState<{ center: [number, number], radius: number } | null>(null);
-  const [markers, setMarkers] = useState<{ id: number, coordinate: [number, number] }[]>([]);
+export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
+  const [circle, setCircle] = useState<{ center: LatLng, radius: number } | null>(null);
+  const [markers, setMarkers] = useState<Answer[]>([]);
   const [map, setMap] = useState<Map | null>(null);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const suggestionsDebounce = useDebounce(1000);
@@ -68,11 +72,19 @@ export default function Home({ coordinates, zoom }: HomeProps) {
         console.log(`Answers for item ${suggestion.name}:`, data);
         setMarkers(data.map((answer: any) => {
           console.log('Processing answer:', answer);
-          return ({
+          const processedAnswer: Answer = {
             id: answer.id,
-            coordinate: [answer.latitude, answer.longitude],
-          });
+            inquiry_id: answer.inquiry_id,
+            user_id: answer.user_id,
+            location: [answer.latitude, answer.longitude] as LatLng,
+            store_name: answer.store_name,
+            store_address: answer.store_address,
+          };
+          console.log('Processed answer:', processedAnswer);
+          return processedAnswer;
         }));
+
+        setSuggestions([]); // Clear suggestions after selection
       },
       onError: (error: any) => {
         console.error('Error fetching answers:', error);
@@ -82,9 +94,9 @@ export default function Home({ coordinates, zoom }: HomeProps) {
 
   return (
     <Layout>
-      <Head title="Home" />
+      <Head title="Where2Buy" />
       <center>
-        <div className="container py-8 px-4 bg-white rounded-lg shadow">
+        <Card className="mt-10 p-6 hover:shadow-lg transition-shadow w-3/4 items-center">
           <h1>Where2Buy</h1>
           <div className="p-4 w-1/4">
             {/* <Combobox className='form-input' type='text' name='search' placeholder='Search Items...' onChange={onSearchChange}></Combobox> */}
@@ -101,24 +113,24 @@ export default function Home({ coordinates, zoom }: HomeProps) {
               </ComboboxContent>
             </Combobox>
           </div>
-          <Button
-            className="mb-4"
-            variant="outline"
-            disabled={!map}
-            onClick={() => {
-              map?.setView(coordinates, zoom, { animate: true, duration: 0.5 });
-            }}
-          >
-            Center Map
-          </Button>
           <MapComponent
-            initialCoordinates={coordinates}
-            initialZoom={zoom}
+            initialCoordinates={initialCoordinates}
+            initialZoom={initialZoom}
             circles={circle ? [circle] : []}
             markers={markers}
             onMapInitialized={setMap}
           />
-        </div>
+          <Button
+            className="mt-4"
+            variant="outline"
+            disabled={!map}
+            onClick={() => {
+              map?.setView(initialCoordinates, initialZoom, { animate: true, duration: 0.5 });
+            }}
+          >
+            Reset Camera
+          </Button>
+        </Card>
       </center>
     </Layout>
   );

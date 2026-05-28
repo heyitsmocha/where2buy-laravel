@@ -27,8 +27,8 @@ Route::get('/', function (Request $request) {
             $zoom = 16; // Closer zoom for user location
 
             return Inertia::render('Home', [
-                'coordinates' => $coordinates,
-                'zoom' => $zoom,
+                'initialCoordinates' => $coordinates,
+                'initialZoom' => $zoom,
             ]);
         }
     } catch (\Exception $e) {
@@ -36,7 +36,7 @@ Route::get('/', function (Request $request) {
     }
     // If geolocation fails, use fallback coordinates and zoom
     return Inertia::render('Home', [
-        'coordinates' => $fallbackCoordinate,
-        'zoom' => $fallbackZoom,
+        'initialCoordinates' => $fallbackCoordinate,
+        'initialZoom' => $fallbackZoom,
     ]);
 });
