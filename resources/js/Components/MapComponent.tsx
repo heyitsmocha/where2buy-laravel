@@ -10,7 +10,10 @@ import {
   TileLayer,
   useMap,
   Marker,
-} from 'react-leaflet'
+  Popup,
+} from 'react-leaflet';
+
+import { type Answer } from '@/Types/types.js';
 
 // Set up OpenLayers to use geographic coordinates (lon/lat)
 // useGeographic();
@@ -67,7 +70,7 @@ type MapComponentProps = {
   onMoveEnd?: (center: [number, number]) => void;
   onClick?: (coordinate: [number, number]) => void;
   circles?: { center: [number, number]; radius: number }[];
-  markers?: { id: number; coordinate: [number, number] }[];
+  markers?: Answer[];
 }
 
 export default function MapComponent({ initialCoordinates, initialZoom, onMapInitialized, onMoveStart, onMoveEnd, onClick, circles, markers }: MapComponentProps) {
@@ -93,7 +96,11 @@ export default function MapComponent({ initialCoordinates, initialZoom, onMapIni
         {markers?.map(marker => {
             console.log('Rendering marker:', marker);
             return (
-                <Marker key={marker.id} position={marker.coordinate} />
+                <Marker key={marker.id} position={marker.location} >
+                    <Popup>
+                        {marker.store_name}
+                    </Popup>
+                </Marker>
             );
         })}
 
