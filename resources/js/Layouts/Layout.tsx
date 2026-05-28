@@ -1,13 +1,18 @@
+import { Head } from "@inertiajs/react";
 import type { ReactNode } from "react";
 
 type LayoutProps = {
-    children: ReactNode
+  title?: string;
+  children: ReactNode
 }
 
-export default function Layout({ children }: LayoutProps) {
-    return (
-        <main className="min-h-screen bg-gray-100 p-4">
-            <section>{children}</section>
-        </main>
-    );
+export default function Layout({ title, children }: LayoutProps) {
+  return (
+    <>
+      <Head title={title ?? "Where2Buy"} />
+      <main className="min-h-screen bg-gray-100 p-4">
+        <section>{children}</section>
+      </main>
+    </>
+  );
 }

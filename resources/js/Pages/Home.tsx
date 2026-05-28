@@ -93,15 +93,14 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
   }
 
   return (
-    <Layout>
-      <Head title="Where2Buy" />
+    <Layout title="Where2Buy - Find where to buy your items!">
       <center>
         <Card className="mt-10 p-6 hover:shadow-lg transition-shadow w-3/4 items-center">
           <h1>Where2Buy</h1>
           <div className="p-4 w-1/4">
             {/* <Combobox className='form-input' type='text' name='search' placeholder='Search Items...' onChange={onSearchChange}></Combobox> */}
             <Combobox items={suggestions}>
-              <ComboboxInput placeholder="Search Items..." onChange={onSearchChange} showClear  />
+              <ComboboxInput placeholder="Search Items..." onChange={onSearchChange} showClear />
               <ComboboxContent>
                 <ComboboxList>
                   {(suggestion) => (
