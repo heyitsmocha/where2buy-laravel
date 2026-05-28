@@ -31,7 +31,7 @@ function ComboboxTrigger({
       {...props}
     >
       {children}
-      <ChevronDownIcon className="pointer-events-none size-4 text-muted-foreground" />
+      {/* <ChevronDownIcon className="pointer-events-none size-4 text-muted-foreground" /> */}
     </ComboboxPrimitive.Trigger>
   )
 }
@@ -107,7 +107,7 @@ function ComboboxContent({
         align={align}
         alignOffset={alignOffset}
         anchor={anchor}
-        className="isolate z-50"
+        className="isolate z-1000" // Ensure the content is above other elements
       >
         <ComboboxPrimitive.Popup
           data-slot="combobox-content"
