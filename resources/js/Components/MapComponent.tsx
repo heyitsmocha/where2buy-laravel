@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { MdLocationPin } from 'react-icons/md';
-import { renderToStaticMarkup } from 'react-dom/server';
-
-import { Map as LeafletMap } from 'leaflet';
-
 import {
   MapContainer,
   TileLayer,
@@ -19,10 +14,10 @@ import { type Answer } from '@/Types/types.js';
 // useGeographic();
 
 type MapControllerProps = {
-  onMapInitialized?: (map: any) => void;
-  onMoveStart?: () => void;
-  onMoveEnd?: (center: [number, number]) => void;
-  onClick?: (coordinate: [number, number]) => void;
+  onMapInitialized?: ((map: any) => void) | undefined;
+  onMoveStart?: (() => void) | undefined;
+  onMoveEnd?: ((center: [number, number]) => void) | undefined;
+  onClick?: ((coordinate: [number, number]) => void) | undefined;
 }
 
 function MapController({ onMapInitialized, onMoveStart, onMoveEnd, onClick }: MapControllerProps) {
@@ -34,33 +29,42 @@ function MapController({ onMapInitialized, onMoveStart, onMoveEnd, onClick }: Ma
   }, [map, onMapInitialized]);
 
   // Set up event listeners for map interactions
+  const callbacksRef = useRef({ onMoveStart, onMoveEnd, onClick });
+  // Listen for changes in callbacks to prevent stale closures
   useEffect(() => {
-    map.on('movestart', () => {
-      onMoveStart?.();
-    });
+    callbacksRef.current = { onMoveStart, onMoveEnd, onClick };
+  }, [onMoveStart, onMoveEnd, onClick]);
+  // Set up event listeners for map interactions
+  useEffect(() => {
+    const handleMoveStart = () => {
+      callbacksRef.current.onMoveStart?.();
+    };
+    map.on('movestart', handleMoveStart);
 
-    map.on('moveend', () => {
+    const handleMoveEnd = () => {
       const center = map.getCenter();
       if (center) {
-        onMoveEnd?.([center.lat, center.lng]);
+        callbacksRef.current.onMoveEnd?.([center.lat, center.lng]);
       }
-    });
+    }
+    map.on('moveend', handleMoveEnd);
 
-    map.on('click', (event) => {
-      onClick?.([event.latlng.lat, event.latlng.lng]);
-    });
+
+    const handleClick = (event: any) => {
+      callbacksRef.current.onClick?.([event.latlng.lat, event.latlng.lng]);
+    };
+    map.on('click', handleClick);
 
     // Cleanup function to unbind event listeners when component unmounts or dependencies change
     return () => {
-      map.off('movestart');
-      map.off('moveend');
-      map.off('click');
+      map.off('movestart', handleMoveStart);
+      map.off('moveend', handleMoveEnd);
+      map.off('click', handleClick);
     }
-  }, [map, onMoveStart, onMoveEnd, onClick]); // Listen for changes in callbacks to prevent stale closures and re-bind events
+  }, [map]);
 
   return null;
 }
-
 
 type MapComponentProps = {
   initialCoordinates: [number, number];
@@ -73,7 +77,7 @@ type MapComponentProps = {
   markers?: Answer[];
 }
 
-export default function MapComponent({ initialCoordinates, initialZoom, onMapInitialized, onMoveStart, onMoveEnd, onClick, circles, markers }: MapComponentProps) {
+export default function MapComponent({ initialCoordinates, initialZoom, circles, markers, ...controllerProps }: MapComponentProps) {
   // console.log('initialCoordinates:', initialCoordinates, 'initialZoom:', initialZoom);
   return (
     <>
@@ -105,10 +109,7 @@ export default function MapComponent({ initialCoordinates, initialZoom, onMapIni
         })}
 
         <MapController
-          {...(onMapInitialized ? { onMapInitialized } : {})}
-          {...(onMoveStart ? { onMoveStart } : {})}
-          {...(onMoveEnd ? { onMoveEnd } : {})}
-          {...(onClick ? { onClick } : {})}
+          {...controllerProps}
         />
       </MapContainer>
     </>
