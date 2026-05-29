@@ -1,4 +1,3 @@
-import { Head } from '@inertiajs/react';
 import Layout from '../Layouts/Layout.js';
 
 import { useState } from 'react';
@@ -7,8 +6,7 @@ import useDebounce from 'react-debounced';
 import { apiGet } from '../util';
 import { type Answer, type LatLng } from '@/Types/types.js';
 
-
-import MapComponent from '../Components/MapComponent.js';
+import MapComponent from '../Components/Map/MapComponent.js';
 import { Card } from '@/Components/ui/card.js';
 import { Button } from '@/Components/ui/button.js';
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from '@/Components/ui/combobox.js';
