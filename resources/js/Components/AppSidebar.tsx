@@ -7,7 +7,13 @@ import {
   SidebarMenuItem,
 } from "@/Components/ui/sidebar";
 
-export default function AppSidebar() {
+interface AppSidebarProps {
+  isLoggedIn: boolean;
+  onLoginClick: () => void;
+  onLogoutClick: () => void;
+}
+export default function AppSidebar({ isLoggedIn, onLoginClick, onLogoutClick }: AppSidebarProps) {
+
   return (
     <Sidebar variant="sidebar">
       <SidebarHeader>

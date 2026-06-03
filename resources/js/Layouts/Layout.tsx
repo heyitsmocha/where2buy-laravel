@@ -1,25 +1,82 @@
-import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar";
 import { Head } from "@inertiajs/react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { usePage } from "@inertiajs/react";
+
+import { SidebarProvider, SidebarTrigger, useSidebar } from "@/Components/ui/sidebar";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/Components/ui/sheet";
 
 import AppSidebar from "@/Components/AppSidebar";
+import AuthComponent from "@/Components/Auth/AuthComponent";
+import { TooltipProvider } from "@/Components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/Components/ui/dialog";
+import type { SharedProps } from "@/Types/types";
 
 type LayoutProps = {
   title?: string;
-  children: ReactNode
+  children: ReactNode;
 }
 
 export default function Layout({ title, children }: LayoutProps) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isAuthSheetOpen, setIsAuthSheetOpen] = useState(false);
+  const isDesktop = !useIsMobile();
+  const { auth } = usePage<SharedProps>().props;
+
+  const handleLogout = () => {
+    console.log("Logout clicked");
+  }
+
+  const handleAuthSheetOpen = () => {
+    // Dismiss the sidebar when the auth sheet is opened
+    if (!isAuthSheetOpen && isSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+    setIsAuthSheetOpen(true);
+  }
+
   return (
     <>
       <Head title={title ?? "Where2Buy"} />
-      <SidebarProvider>
-        <AppSidebar />
-        <main className="w-full bg-gray-100 p-4">
-            <SidebarTrigger />
-            <section>{children}</section>
-        </main>
-      </SidebarProvider>
+      <TooltipProvider>
+        <SidebarProvider open={isSidebarOpen} onOpenChange={setIsSidebarOpen} >
+          <AppSidebar isLoggedIn={auth.isLoggedIn} onLoginClick={handleAuthSheetOpen} onLogoutClick={handleLogout} />
+          <main className="w-full bg-gray-100">
+            {/* Full-width header with sidebar trigger and app title */}
+            <div className="w-full h-16 bg-white shadow-sm flex items-center px-4">
+              <SidebarTrigger variant="outline" />
+              <h1 className="text-xl font-bold ml-4">Where2Buy</h1>
+            </div>
+            <section className="p-0">{children}</section>
+          </main>
+        </SidebarProvider>
+      </TooltipProvider>
+      {/* Bottom sheet if mobile, center dialog box if desktop */}
+      {isDesktop
+        ? ( // Dialog
+          <Dialog open={isAuthSheetOpen} onOpenChange={setIsAuthSheetOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="py-2 border-b-2 border-black/10">
+                  Login
+                </DialogTitle>
+                <AuthComponent />
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )
+        : ( // Bottom Sheet
+          <Sheet open={isAuthSheetOpen} onOpenChange={setIsAuthSheetOpen}>
+            <SheetContent side="bottom">
+              <SheetHeader>
+                <SheetTitle>
+                  Login
+                </SheetTitle>
+              </SheetHeader>
+              <AuthComponent />
+            </SheetContent>
+          </Sheet>
+        )}
     </>
   );
 }
