@@ -3,7 +3,7 @@ import Layout from '../Layouts/Layout.js';
 import { useState } from 'react';
 import useDebounce from 'react-debounced';
 
-import { apiGet } from '../util';
+import { apiGet } from '../util.js';
 import { type Answer, type LatLng } from '@/Types/types.js';
 
 import MapComponent from '../Components/Map/MapComponent.js';
@@ -93,9 +93,8 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
   return (
     <Layout title="Where2Buy - Find where to buy your items!">
       <center>
-        <Card className="mt-10 p-6 hover:shadow-lg transition-shadow w-3/4 items-center">
-          <h1>Where2Buy</h1>
-          <div className="p-4 w-1/4">
+        <Card className="mt-10 p-6 hover:shadow-lg transition-shadow sm:w-full lg:w-3/4 xl:w-11/12 items-center">
+          <div className="p-4 lg:w-1/4">
             {/* <Combobox className='form-input' type='text' name='search' placeholder='Search Items...' onChange={onSearchChange}></Combobox> */}
             <Combobox items={suggestions}>
               <ComboboxInput placeholder="Search Items..." onChange={onSearchChange} showClear />
