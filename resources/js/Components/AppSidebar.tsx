@@ -15,7 +15,7 @@ import { Link } from "@inertiajs/react";
 import { LuLogIn, LuLogOut } from "react-icons/lu";
 import { MdHome, MdListAlt } from "react-icons/md";
 
-import { usePage } from "@inertiajs/react";
+import { usePage, router } from "@inertiajs/react";
 
 interface AppSidebarProps {
   isLoggedIn: boolean;
@@ -40,31 +40,26 @@ export default function AppSidebar({ isLoggedIn, onLoginClick, onLogoutClick }: 
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <Link href="/">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton className="p-4 cursor-pointer" isActive={isUrlActive("/")} tooltip="Home">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton className="p-4 cursor-pointer" isActive={isUrlActive("/")} tooltip="Home" asChild>
+              <Link href="/">
                 <MdHome className="inline-block mr-2" />
                 <span>Home</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </Link>
-        { !isLoggedIn
-          ? <p className="text-gray-600">Please log in for full access.</p>
-          : <>
-            <Link href="/inquiries/me">
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton className="p-4 cursor-pointer" isActive={isUrlActive("/inquiries/me")} tooltip="My Inquiries">
-                    <MdListAlt className="inline-block mr-2" />
-                    <span>My Inquiries</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </Link>
-          </>
-        }
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton className="p-4 cursor-pointer" isActive={isUrlActive("/inquiries/me")} tooltip="My Inquiries" asChild>
+              <Button variant="ghost" onClick={isLoggedIn ? () => router.get("/inquiries/me") : undefined} disabled={!isLoggedIn}>
+                <MdListAlt className="inline-block mr-2" />
+                <span>My Inquiries</span>
+              </Button>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

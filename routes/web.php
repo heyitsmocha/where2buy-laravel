@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
 use App\Http\Controllers\Web\AuthController;
 
 Route::get('/', function (Request $request) {
@@ -47,3 +48,10 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('/logout', 'logout')->middleware('auth');
 });
+
+Route::get('/inquiries/me', function (Request $request) {
+    $inquiries = $request->user()->inquiries()->get();
+    return Inertia::render('MyInquiries', [
+        'inquiries' => $inquiries,
+    ]);
+})->middleware('auth');
