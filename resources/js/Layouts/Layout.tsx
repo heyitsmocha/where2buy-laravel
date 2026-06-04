@@ -1,9 +1,11 @@
 import { Head } from "@inertiajs/react";
 import { useState, type ReactNode } from "react";
-import { usePage } from "@inertiajs/react";
+import { usePage, router } from "@inertiajs/react";
 
 import { SidebarProvider, SidebarTrigger, useSidebar } from "@/Components/ui/sidebar";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/Components/ui/sheet";
+import { toast } from "sonner";
+import { Toaster } from "@/Components/ui/sonner";
 
 import AppSidebar from "@/Components/AppSidebar";
 import AuthComponent from "@/Components/Auth/AuthComponent";
@@ -24,7 +26,19 @@ export default function Layout({ title, children }: LayoutProps) {
   const { auth } = usePage<SharedProps>().props;
 
   const handleLogout = () => {
-    console.log("Logout clicked");
+    router.post('/logout', {}, {
+      onSuccess: () => {
+        toast.success('Logged out successfully');
+      },
+      onError: (error) => {
+        toast.error('Logout failed');
+      }
+    });
+  }
+
+  const handleLoginSuccess = () => {
+    setIsAuthSheetOpen(false);
+    toast.success('Logged in successfully');
   }
 
   const handleAuthSheetOpen = () => {
@@ -35,7 +49,7 @@ export default function Layout({ title, children }: LayoutProps) {
     setIsAuthSheetOpen(true);
   }
 
-  const authComponent = <AuthComponent onSuccess={() => setIsAuthSheetOpen(false)} />;
+  const authComponent = <AuthComponent onSuccess={handleLoginSuccess} />;
 
   return (
     <>
@@ -50,6 +64,7 @@ export default function Layout({ title, children }: LayoutProps) {
               <h1 className="text-xl font-bold ml-4">Where2Buy</h1>
             </div>
             <section className="p-0">{children}</section>
+            <Toaster />
           </main>
         </SidebarProvider>
       </TooltipProvider>
