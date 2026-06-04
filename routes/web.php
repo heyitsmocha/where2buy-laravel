@@ -40,3 +40,7 @@ Route::get('/', function (Request $request) {
         'initialZoom' => $fallbackZoom,
     ]);
 });
+
+Route::controller(UserController::class)->group(function () {
+    Route::post('/login', 'webLogin');
+});
