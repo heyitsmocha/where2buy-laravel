@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Web\AuthController;
 
 Route::get('/', function (Request $request) {
     $fallbackCoordinate = [108.92222921712094, 4.86751298960347]; // Between Peninsular Malaysia and Borneo
@@ -41,6 +42,8 @@ Route::get('/', function (Request $request) {
     ]);
 });
 
-Route::controller(UserController::class)->group(function () {
-    Route::post('/login', 'webLogin');
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
+    Route::post('/logout', 'logout')->middleware('auth');
 });

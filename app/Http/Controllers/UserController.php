@@ -62,26 +62,6 @@ class UserController extends Controller
         return response()->json($responseJson);
     }
 
-    public function webLogin(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        $credentials = $request->only('email', 'password');
-
-        if (auth()->attempt($credentials)) {
-            // Regenerate session to prevent session fixation attacks
-            $request->session()->regenerate();
-
-            return redirect()->intended('/');
-        }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
-    }
 
     public function logout(Request $request)
     {
