@@ -25,6 +25,6 @@ export type LatLng = [latitude: number, longitude: number];
 
 export type SharedProps = {
     auth: {
-        isLoggedIn: boolean;
+        user: any;
     }
 }
