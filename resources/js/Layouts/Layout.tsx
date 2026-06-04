@@ -35,6 +35,8 @@ export default function Layout({ title, children }: LayoutProps) {
     setIsAuthSheetOpen(true);
   }
 
+  const authComponent = <AuthComponent onSuccess={() => setIsAuthSheetOpen(false)} />;
+
   return (
     <>
       <Head title={title ?? "Where2Buy"} />
@@ -60,8 +62,8 @@ export default function Layout({ title, children }: LayoutProps) {
                 <DialogTitle className="py-2 border-b-2 border-black/10">
                   Login
                 </DialogTitle>
-                <AuthComponent />
               </DialogHeader>
+              {authComponent}
             </DialogContent>
           </Dialog>
         )
@@ -73,7 +75,7 @@ export default function Layout({ title, children }: LayoutProps) {
                   Login
                 </SheetTitle>
               </SheetHeader>
-              <AuthComponent />
+              {authComponent}
             </SheetContent>
           </Sheet>
         )}
