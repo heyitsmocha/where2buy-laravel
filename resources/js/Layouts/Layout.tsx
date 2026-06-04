@@ -24,6 +24,7 @@ export default function Layout({ title, children }: LayoutProps) {
   const [isAuthSheetOpen, setIsAuthSheetOpen] = useState(false);
   const isDesktop = !useIsMobile();
   const { auth } = usePage<SharedProps>().props;
+  const [mode, setMode] = useState<'login' | 'register'>('login');
 
   const handleLogout = () => {
     router.post('/logout', {}, {
@@ -38,7 +39,8 @@ export default function Layout({ title, children }: LayoutProps) {
 
   const handleLoginSuccess = () => {
     setIsAuthSheetOpen(false);
-    toast.success('Logged in successfully');
+    const msg = mode === 'login' ? 'Logged in successfully' : 'Registered successfully, welcome aboard!';
+    toast.success(msg);
   }
 
   const handleAuthSheetOpen = () => {
@@ -49,7 +51,7 @@ export default function Layout({ title, children }: LayoutProps) {
     setIsAuthSheetOpen(true);
   }
 
-  const authComponent = <AuthComponent onSuccess={handleLoginSuccess} />;
+  const authComponent = <AuthComponent onSuccess={handleLoginSuccess} onModeChange={setMode} />;
 
   return (
     <>
@@ -75,7 +77,7 @@ export default function Layout({ title, children }: LayoutProps) {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle className="py-2 border-b-2 border-black/10">
-                  Login
+                  {mode === 'login' ? 'Login' : 'Register'}
                 </DialogTitle>
               </DialogHeader>
               {authComponent}
@@ -87,7 +89,7 @@ export default function Layout({ title, children }: LayoutProps) {
             <SheetContent side="bottom">
               <SheetHeader>
                 <SheetTitle>
-                  Login
+                  {mode === 'login' ? 'Login' : 'Register'}
                 </SheetTitle>
               </SheetHeader>
               {authComponent}
