@@ -50,7 +50,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::get('/inquiries/me', function (Request $request) {
-    $inquiries = $request->user()->inquiries()->get();
+    $inquiries = $request->user()->inquiries()->with('item')->get();
     return Inertia::render('MyInquiries', [
         'inquiries' => $inquiries,
     ]);

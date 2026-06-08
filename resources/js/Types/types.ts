@@ -2,8 +2,7 @@ export interface Inquiry {
   id: number;
   created_at: string;
   item_id: number;
-  item_name: string;
-  item_description: string;
+  item: Item;
   location: LatLng;
   search_radius_meters: number;
 }
