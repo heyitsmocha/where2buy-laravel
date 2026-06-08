@@ -58,7 +58,7 @@ export default function Layout({ title, children }: LayoutProps) {
       <Head title={title ?? "Where2Buy"} />
       <TooltipProvider>
         <SidebarProvider open={isSidebarOpen} onOpenChange={setIsSidebarOpen} >
-          <AppSidebar isLoggedIn={auth.user !== null} onLoginClick={handleAuthSheetOpen} onLogoutClick={handleLogout} />
+          <AppSidebar user={auth.user} onLoginClick={handleAuthSheetOpen} onLogoutClick={handleLogout} />
           <main className="w-full bg-gray-100">
             {/* Full-width header with sidebar trigger and app title */}
             <div className="w-full h-16 bg-white shadow-sm flex items-center px-4">
