@@ -35,10 +35,16 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // sidebar_state came built-in with the component, so no need to define our own state for tracking expanded state.
+        $sidebarStateCookie = $request->cookie('sidebar_state');
+
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+            ],
+            'sidebar' => [
+                'state' => $sidebarStateCookie === null ? true : filter_var($sidebarStateCookie, FILTER_VALIDATE_BOOLEAN),
             ]
         ];
     }

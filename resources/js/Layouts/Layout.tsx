@@ -20,10 +20,10 @@ type LayoutProps = {
 }
 
 export default function Layout({ title, children }: LayoutProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isAuthSheetOpen, setIsAuthSheetOpen] = useState(false);
   const isDesktop = !useIsMobile();
-  const { auth } = usePage<SharedProps>().props;
+  const { auth, sidebar } = usePage<SharedProps>().props;
+  const [isSidebarOpen, setIsSidebarOpen] = useState(sidebar.state);
   const [mode, setMode] = useState<'login' | 'register'>('login');
 
   const handleLogout = () => {
