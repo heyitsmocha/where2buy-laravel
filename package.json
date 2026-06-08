@@ -1,4 +1,5 @@
 {
+    "name": "w2b_laravel",
     "$schema": "https://www.schemastore.org/package.json",
     "private": true,
     "type": "module",
