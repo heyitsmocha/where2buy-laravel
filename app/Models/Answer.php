@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\Traits\HasSpatial;
 
+/**
+ * @mixin IdeHelperAnswer
+ */
 class Answer extends Model
 {
     use HasSpatial;

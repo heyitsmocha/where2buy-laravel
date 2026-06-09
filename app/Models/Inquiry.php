@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
+/**
+ * @mixin IdeHelperInquiry
+ */
 class Inquiry extends Model
 {
     protected $casts = [
