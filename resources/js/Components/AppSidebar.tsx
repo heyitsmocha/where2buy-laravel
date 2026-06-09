@@ -17,15 +17,16 @@ import { LuLogIn, LuLogOut } from "react-icons/lu";
 import { MdHome, MdListAlt } from "react-icons/md";
 
 import { usePage, router } from "@inertiajs/react";
+import type { SharedProps } from "@/Types/types";
 
 interface AppSidebarProps {
-  user: any | null;
   onLoginClick: () => void;
   onLogoutClick: () => void;
 }
 
-export default function AppSidebar({ user, onLoginClick, onLogoutClick }: AppSidebarProps) {
-  const isLoggedIn = user != null;
+export default function AppSidebar({ onLoginClick, onLogoutClick }: AppSidebarProps) {
+  const { auth } = usePage<SharedProps>().props;
+  const isLoggedIn = auth.user != null;
 
   const { url } = usePage();
 
@@ -60,7 +61,7 @@ export default function AppSidebar({ user, onLoginClick, onLogoutClick }: AppSid
       <SidebarFooter className="border-t">
         <SidebarMenu className="group-data-[collapsible=icon]:hidden">
           <SidebarMenuItem>
-            {isLoggedIn ? (user.name) : 'Guest'}
+            {isLoggedIn ? (auth.user.name) : 'Guest'}
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>

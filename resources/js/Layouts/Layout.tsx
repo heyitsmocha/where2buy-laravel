@@ -22,7 +22,7 @@ type LayoutProps = {
 export default function Layout({ title, children }: LayoutProps) {
   const [isAuthSheetOpen, setIsAuthSheetOpen] = useState(false);
   const isDesktop = !useIsMobile();
-  const { auth, sidebar } = usePage<SharedProps>().props;
+  const { sidebar } = usePage<SharedProps>().props;
   const [isSidebarOpen, setIsSidebarOpen] = useState(sidebar.state);
   const [mode, setMode] = useState<'login' | 'register'>('login');
 
@@ -58,7 +58,7 @@ export default function Layout({ title, children }: LayoutProps) {
       <Head title={title ?? "Where2Buy"} />
       <TooltipProvider>
         <SidebarProvider open={isSidebarOpen} onOpenChange={setIsSidebarOpen} >
-          <AppSidebar user={auth.user} onLoginClick={handleAuthSheetOpen} onLogoutClick={handleLogout} />
+          <AppSidebar onLoginClick={handleAuthSheetOpen} onLogoutClick={handleLogout} />
           <main className="w-full bg-gray-100">
             {/* Full-width header with sidebar trigger and app title */}
             <div className="w-full h-16 bg-white shadow-sm flex items-center px-4">
