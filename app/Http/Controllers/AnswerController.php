@@ -10,8 +10,7 @@ use Illuminate\Http\Request;
 class AnswerController extends Controller
 {
     public function indexByItem(Item $item) {
-        $answers = Answer::query()
-            ->whereIn('inquiry_id', $item->inquiries()->pluck('id'))
+        $answers = Answer::query()->whereIn('inquiry_id', $item->inquiries()->select('id'))
             ->with('inquiry')
             ->get();
 
@@ -42,7 +41,7 @@ class AnswerController extends Controller
 
         // Find answers for the item that are within the specified range
         $answers = Answer::query()
-            ->whereIn('inquiry_id', $item->inquiries()->pluck('id'))
+            ->whereIn('inquiry_id', $item->inquiries()->select('id'))
             ->whereLatLngWithinSearchRadius($latitude, $longitude, $range)
             ->get();
 
