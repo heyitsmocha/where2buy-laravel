@@ -61,7 +61,7 @@ export default function AppSidebar({ onLoginClick, onLogoutClick }: AppSidebarPr
       <SidebarFooter className="border-t">
         <SidebarMenu className="group-data-[collapsible=icon]:hidden">
           <SidebarMenuItem>
-            {isLoggedIn ? (auth.user.name) : 'Guest'}
+            {isLoggedIn ? (auth.user!.name) : 'Guest'}
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>

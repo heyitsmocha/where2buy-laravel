@@ -26,7 +26,11 @@ export type LatLng = [latitude: number, longitude: number];
 
 export type SharedProps = {
   auth: {
-    user: any;
+    user: {
+      id: number;
+      name: string;
+      email: string;
+    } | null;
   };
   sidebar: {
     state: boolean;
