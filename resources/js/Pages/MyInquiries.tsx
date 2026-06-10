@@ -1,6 +1,8 @@
 import Layout from '@/Layouts/Layout';
 import type { Inquiry } from '@/Types/types';
 
+import { Link } from '@inertiajs/react';
+
 export default function MyInquiries({ inquiries }: { inquiries: Inquiry[] }) {
   return (
     <Layout>
@@ -12,9 +14,11 @@ export default function MyInquiries({ inquiries }: { inquiries: Inquiry[] }) {
           <ul className="space-y-4">
             {inquiries.map((inquiry) => (
               <li key={inquiry.id} className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <h2 className="text-xl font-semibold">{inquiry.item_name}</h2>
-                <p className="text-gray-600">Created at: {new Date(inquiry.created_at).toLocaleString()}</p>
-                {/* <p className="text-gray-800 mt-2">{inquiry.item_description}</p> */}
+                <Link href={`/inquiries/me/${inquiry.id}`}>
+                  <h2 className="text-xl font-semibold">{inquiry.item_name}</h2>
+                  <p className="text-gray-600">Created at: {new Date(inquiry.created_at).toLocaleString()}</p>
+                  {/* <p className="text-gray-800 mt-2">{inquiry.item_description}</p> */}
+                </Link>
               </li> // Display each inquiry in a styled card
             ))}
           </ul>

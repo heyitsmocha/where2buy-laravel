@@ -6,6 +6,7 @@ export interface Inquiry {
   latitude: number;
   longitude: number;
   search_radius_meters: number;
+  answers: Answer[];
 }
 
 export interface Item {

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Web\AuthController;
+use App\Models\Inquiry;
 
 Route::get('/', function (Request $request) {
     $fallbackCoordinate = [108.92222921712094, 4.86751298960347]; // Between Peninsular Malaysia and Borneo
@@ -51,7 +52,16 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::get('/inquiries/me', function (Request $request) {
     $inquiries = $request->user()->inquiries()->with('item')->get();
+    $inquiries = $inquiries->sortByDesc('created_at')->values(); // Sort by latest
     return Inertia::render('MyInquiries', [
         'inquiries' => $inquiries->toResourceCollection()->resolve(), // Convert to resource collection and resolve to array
+    ]);
+})->middleware('auth');
+
+Route::get('/inquiries/me/{inquiry}', function (Inquiry $inquiry) {
+    $inquiry->load('answers'); // Eager load item and answers relationships
+
+    return Inertia::render('MyInquiryDetail', [
+        'inquiry' => $inquiry->toResource(),
     ]);
 })->middleware('auth');

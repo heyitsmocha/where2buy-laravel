@@ -24,6 +24,7 @@ class InquiryResource extends JsonResource
             'latitude' => $this->location->latitude,
             'longitude' => $this->location->longitude,
             'search_radius_meters' => $this->search_radius_meters,
+            'answers' => AnswerResource::collection($this->whenLoaded('answers')),
         ];
     }
 }
