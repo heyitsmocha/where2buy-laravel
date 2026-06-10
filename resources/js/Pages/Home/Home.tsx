@@ -1,11 +1,11 @@
-import Layout from '../Layouts/Layout.js';
+import Layout from '@/Layouts/Layout.js';
 
 import { useState } from 'react';
-import { useHome } from '@/hooks/useHome.js';
+import { useHome } from '@/Pages/Home/useHome.js';
 
 import { type Answer } from '@/Types/types.js';
 
-import MapComponent from '../Components/Map/MapComponent.js';
+import MapComponent from '@/Components/Map/MapComponent.js';
 import { Card } from '@/Components/ui/card.js';
 import { Button } from '@/Components/ui/button.js';
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from '@/Components/ui/combobox.js';

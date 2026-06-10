@@ -8,7 +8,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Web\AuthController;
 use App\Models\Inquiry;
 
-Route::get('/', function (Request $request) {
+function getInitialCoords(Request $request) {
     $fallbackCoordinate = [108.92222921712094, 4.86751298960347]; // Between Peninsular Malaysia and Borneo
     $fallbackZoom = 5; // Zoom level for whole of Malaysia
 
@@ -29,18 +29,23 @@ Route::get('/', function (Request $request) {
             $coordinates = [$data['lat'], $data['lon']];
             $zoom = 16; // Closer zoom for user location
 
-            return Inertia::render('Home', [
-                'initialCoordinates' => $coordinates,
-                'initialZoom' => $zoom,
-            ]);
+            return [$coordinates, $zoom];
         }
     } catch (\Exception $e) {
         // Absorb any exceptions and fall back to default coordinates
     }
     // If geolocation fails, use fallback coordinates and zoom
-    return Inertia::render('Home', [
-        'initialCoordinates' => $fallbackCoordinate,
-        'initialZoom' => $fallbackZoom,
+    return [$fallbackCoordinate, $fallbackZoom];
+}
+
+Route::get('/', function (Request $request) {
+    [$initialCoordinates, $initialZoom] = getInitialCoords($request);
+    return Inertia::render('Home/Home', [
+        'initialCoordinates' => [
+            'latitude' => $initialCoordinates[0],
+            'longitude' => $initialCoordinates[1],
+        ],
+        'initialZoom' => $initialZoom,
     ]);
 });
 

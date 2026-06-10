@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useDebounce from 'react-debounced';
 
-import { apiGet } from '../util.js';
+import { apiGet } from '@/util.js';
 import type { Answer } from '@/Types/types.js';
 
 export function useHome() {
