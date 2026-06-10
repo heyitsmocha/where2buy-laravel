@@ -3,7 +3,7 @@ import Layout from '../Layouts/Layout.js';
 import { useState } from 'react';
 import { useHome } from '@/hooks/useHome.js';
 
-import { type Answer, type LatLng } from '@/Types/types.js';
+import { type Answer } from '@/Types/types.js';
 
 import MapComponent from '../Components/Map/MapComponent.js';
 import { Card } from '@/Components/ui/card.js';
@@ -13,12 +13,12 @@ import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } 
 import { Map } from 'leaflet';
 
 type HomeProps = {
-  initialCoordinates: LatLng;
+  initialCoordinates: { latitude: number; longitude: number };
   initialZoom: number;
 }
 
 export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
-  const [circle, setCircle] = useState<{ center: LatLng, radius: number } | null>(null);
+  const [circle, setCircle] = useState<{ center: { latitude: number; longitude: number }; radius: number } | null>(null);
   const [map, setMap] = useState<Map | null>(null);
 
   const { suggestions, markers, onSearchChange, handleSuggestionClick } = useHome();
@@ -43,9 +43,9 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
             </Combobox>
           </div>
           <MapComponent
-            initialCoordinates={initialCoordinates}
+            initialCoordinates={[initialCoordinates.latitude, initialCoordinates.longitude]}
             initialZoom={initialZoom}
-            circles={circle ? [circle] : []}
+            // circles={circle ? [circle] : []}
             markers={markers}
             onMapInitialized={setMap}
           />
@@ -54,7 +54,7 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
             variant="outline"
             disabled={!map}
             onClick={() => {
-              map?.setView(initialCoordinates, initialZoom, { animate: true, duration: 0.5 });
+              map?.setView([initialCoordinates.latitude, initialCoordinates.longitude], initialZoom, { animate: true, duration: 0.5 });
             }}
           >
             Reset Camera

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import useDebounce from 'react-debounced';
 
 import { apiGet } from '../util.js';
-import type { Answer, LatLng } from '@/Types/types.js';
+import type { Answer } from '@/Types/types.js';
 
 export function useHome() {
   const suggestionsDebounce = useDebounce(1000);
@@ -58,7 +58,8 @@ export function useHome() {
             id: answer.id,
             inquiry_id: answer.inquiry_id,
             user_id: answer.user_id,
-            location: [answer.latitude, answer.longitude] as LatLng,
+            latitude: answer.latitude,
+            longitude: answer.longitude,
             store_name: answer.store_name,
             store_address: answer.store_address,
           };

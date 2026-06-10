@@ -41,7 +41,7 @@ export default function MapComponent({ initialCoordinates, initialZoom, circles,
           {markers?.map(marker => {
             console.log('Rendering marker:', marker);
             return (
-              <Marker key={marker.id} position={marker.location} >
+              <Marker key={marker.id} position={[marker.latitude, marker.longitude]} >
                 <Popup>
                   {marker.store_name}
                 </Popup>

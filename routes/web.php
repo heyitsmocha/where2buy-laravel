@@ -52,6 +52,6 @@ Route::controller(AuthController::class)->group(function () {
 Route::get('/inquiries/me', function (Request $request) {
     $inquiries = $request->user()->inquiries()->with('item')->get();
     return Inertia::render('MyInquiries', [
-        'inquiries' => $inquiries,
+        'inquiries' => $inquiries->toResourceCollection()->resolve(), // Convert to resource collection and resolve to array
     ]);
 })->middleware('auth');
