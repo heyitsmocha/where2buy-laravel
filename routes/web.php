@@ -9,14 +9,14 @@ use App\Http\Controllers\Web\AuthController;
 use App\Models\Inquiry;
 
 function getInitialCoords(Request $request) {
-    $fallbackCoordinate = [108.92222921712094, 4.86751298960347]; // Between Peninsular Malaysia and Borneo
+    $fallbackCoordinate = [4.86751298960347, 108.92222921712094]; // Between Peninsular Malaysia and Borneo
     $fallbackZoom = 5; // Zoom level for whole of Malaysia
 
     // TODO: Try first to get geolocation from the browser, and let the ip geolocation be a fallback.
 
     // Try to geolocate the user based on their IP address
     $ip = $request->ip();
-    if ($ip === '127.0.0.1') {
+    if ($ip === '127.0.0.1' || str_starts_with($ip, '192.168.')) {
         // Hardcode an IP address for local development, 127.0.0.1 is localhost and won't work for ip-api.com
         $ip = env('PUBLIC_IP_ADDRESS', '8.8.8.8'); // Retrieved from whatsmyip, recheck every boot. Defaults to Google's public DNS if not set in .env
     }
