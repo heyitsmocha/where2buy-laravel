@@ -17,8 +17,8 @@ function getInitialCoords(Request $request) {
     // Try to geolocate the user based on their IP address
     $ip = $request->ip();
     if ($ip === '127.0.0.1' || str_starts_with($ip, '192.168.')) {
-        // Hardcode an IP address for local development, 127.0.0.1 is localhost and won't work for ip-api.com
-        $ip = env('PUBLIC_IP_ADDRESS', '8.8.8.8'); // Retrieved from whatsmyip, recheck every boot. Defaults to Google's public DNS if not set in .env
+        // Get the public IP address of the client, local IPs won't work for ip-api.com
+        $ip = trim(file_get_contents('https://api.ipify.org'));
     }
 
     try {
