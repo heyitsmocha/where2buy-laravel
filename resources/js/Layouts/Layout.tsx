@@ -59,13 +59,13 @@ export default function Layout({ title, children }: LayoutProps) {
       <TooltipProvider>
         <SidebarProvider open={isSidebarOpen} onOpenChange={setIsSidebarOpen} >
           <AppSidebar onLoginClick={handleAuthSheetOpen} onLogoutClick={handleLogout} />
-          <main className="w-full bg-gray-100">
+          <main className="bg-muted flex flex-col w-screen h-screen">
             {/* Full-width header with sidebar trigger and app title */}
-            <div className="w-full h-16 bg-white shadow-sm flex items-center px-4">
+            <div className="h-16 bg-white shadow-sm flex items-center px-4 shrink-0">
               <SidebarTrigger variant="outline" />
               <h1 className="text-xl font-bold ml-4">Where2Buy</h1>
             </div>
-            <section className="p-0">{children}</section>
+            <section className="flex-1 min-h-0 p-0 overflow-y-auto">{children}</section>
             <Toaster />
           </main>
         </SidebarProvider>

@@ -1,4 +1,5 @@
 import {
+  ZoomControl,
   MapContainer,
   TileLayer,
   Marker,
@@ -30,18 +31,21 @@ export default function MapComponent({ initialCoordinates, initialZoom, circles,
         crossOrigin=""></script>
 
       <MapContainer
+        zoomControl={false}
         center={initialCoordinates}
         zoom={initialZoom}
-        style={{ width: '100%', height: '500px' }}
+        style={{ width: '100%', height: '100%' }}
         whenReady={() => { }}
       >
+        <ZoomControl position="bottomright" />
+
         <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
-            attribution='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
+          attribution='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
 
         <MarkerClusterGroup>
           {markers?.map(marker => {
-            console.log('Rendering marker:', marker);
+            // console.log('Rendering marker:', marker);
             return (
               <Marker key={marker.id} position={[marker.latitude, marker.longitude]} >
                 <Popup>
