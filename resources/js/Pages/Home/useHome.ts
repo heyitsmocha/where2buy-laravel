@@ -21,7 +21,8 @@ export function useHome() {
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
-    console.log('Search query:', query);
+    // console.log('Search query:', query);
+    setMarkers([]); // Clear markers when search query changes
 
     // Debounce
     suggestionsDebounce(() => {
@@ -32,7 +33,7 @@ export function useHome() {
       apiGet({
         url: `items/suggestions/?input=${encodeURIComponent(query)}`,
         onData: (data) => {
-          console.log(`Search results for ${query}:`, data);
+          // console.log(`Search results for ${query}:`, data);
           setSuggestions(data.map((item: ItemSuggestionDto) => ({
             id: item.item_id,
             name: item.item_name,
@@ -46,14 +47,14 @@ export function useHome() {
   }
 
   const handleSuggestionClick = (suggestion: Suggestion) => {
-    console.log(`Clicked suggestion: ${suggestion.name} (ID: ${suggestion.id})`);
+    // console.log(`Clicked suggestion: ${suggestion.name} (ID: ${suggestion.id})`);
 
     apiGet({
       url: `items/${suggestion.id}/answers`,
       onData: (data: any) => {
-        console.log(`Answers for item ${suggestion.name}:`, data);
+        // console.log(`Answers for item ${suggestion.name}:`, data);
         setMarkers(data.map((answer: any) => {
-          console.log('Processing answer:', answer);
+          // console.log('Processing answer:', answer);
           const processedAnswer: Answer = {
             id: answer.id,
             inquiry_id: answer.inquiry_id,
@@ -63,7 +64,7 @@ export function useHome() {
             store_name: answer.store_name,
             store_address: answer.store_address,
           };
-          console.log('Processed answer:', processedAnswer);
+          // console.log('Processed answer:', processedAnswer);
           return processedAnswer;
         }));
 
