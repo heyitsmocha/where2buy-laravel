@@ -5,11 +5,10 @@ import { useHome } from '@/Pages/Home/useHome.js';
 
 import MapComponent from '@/Components/Map/MapComponent.js';
 import { Card } from '@/Components/ui/card.js';
-import { Button } from '@/Components/ui/button.js';
 
 import { Autocomplete } from '@base-ui/react/autocomplete';
 
-import { LocateFixed, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Map } from 'leaflet';
@@ -101,19 +100,6 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
             </Card>
           </div>
         )}
-        {/* Locate button */}
-        <div className="absolute bottom-10.5 md:bottom-6.5 right-12 z-500 shadow-lg rounded-lg">
-          <Button
-            className="h-8 w-8 active:bg-gray-200"
-            variant="outline"
-            disabled={!map}
-            onClick={() => {
-              map?.setView([initialCoordinates.latitude, initialCoordinates.longitude], initialZoom, { animate: true, duration: 0.5 });
-            }}
-          >
-            <LocateFixed />
-          </Button>
-        </div>
       </Card>
     </Layout>
   );

@@ -10,6 +10,28 @@ import MapController from './MapController';
 import type { MapComponentProps } from './map.types';
 
 import MarkerClusterGroup from 'react-leaflet-markercluster';
+import { Button } from '../ui/button';
+import { LocateFixed } from 'lucide-react';
+
+import { useMap } from 'react-leaflet';
+
+function LocateButton({ initialCoordinates, initialZoom }: { initialCoordinates: [number, number], initialZoom: number }) {
+  const map = useMap();
+  return (
+    <div className="absolute bottom-10.5 md:bottom-6.5 right-12 z-500 shadow-lg rounded-lg">
+      <Button
+        className="h-8 w-8 active:bg-gray-200"
+        variant="outline"
+        disabled={!map}
+        onClick={() => {
+          map?.setView([initialCoordinates[0], initialCoordinates[1]], initialZoom, { animate: true, duration: 0.5 });
+        }}
+      >
+        <LocateFixed />
+      </Button>
+    </div>
+  );
+}
 
 export default function MapComponent({ initialCoordinates, initialZoom, circles, markers, ...controllerProps }: MapComponentProps) {
   // console.log('initialCoordinates:', initialCoordinates, 'initialZoom:', initialZoom);
@@ -35,7 +57,6 @@ export default function MapComponent({ initialCoordinates, initialZoom, circles,
         center={initialCoordinates}
         zoom={initialZoom}
         style={{ width: '100%', height: '100%' }}
-        whenReady={() => { }}
       >
         <ZoomControl position="bottomright" />
 
@@ -59,6 +80,8 @@ export default function MapComponent({ initialCoordinates, initialZoom, circles,
         <MapController
           {...controllerProps}
         />
+
+        <LocateButton initialCoordinates={initialCoordinates} initialZoom={initialZoom} />
       </MapContainer>
     </>
   );
