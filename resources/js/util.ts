@@ -5,12 +5,14 @@
  * options: Optional configuration for the fetch request, such as method, headers, body, etc.
  * onData: A callback function that will be called with the parsed JSON data if the request is successful.
  * onError: A callback function that will be called with the error object if the request fails.
+ * onFinally: A callback function that will be called when the request is completed, regardless of success or failure.
  */
-export async function apiGet<T = any>({ url, options, onData, onError }: {
+export async function apiGet<T = any>({ url, options, onData, onError, onFinally }: {
   url: string,
   options?: RequestInit,
   onData?: (data: T[]) => void,
   onError?: (error: any) => void,
+  onFinally?: () => void,
 }
 ): Promise<T[]> {
   return fetch(`/api/${url}`, {
@@ -33,14 +35,18 @@ export async function apiGet<T = any>({ url, options, onData, onError }: {
     console.error('Error fetching JSON:', error);
     onError?.(error);
     throw error;
+  }).finally(() => {
+    console.log('API request completed for URL:', url);
+    onFinally?.();
   });
 }
 
-export async function apiPost<T = any>({ url, body, onData, onError }: {
+export async function apiPost<T = any>({ url, body, onData, onError, onFinally }: {
   url: string,
   body: any,
   onData?: (data: T[]) => [void],
   onError?: (error: any) => void,
+  onFinally?: () => void,
 }): Promise<T[]> {
   return apiGet<T>({
     url,
@@ -50,5 +56,6 @@ export async function apiPost<T = any>({ url, body, onData, onError }: {
     },
     ...(onData && { onData }),
     ...(onError && { onError }),
+    ...(onFinally && { onFinally }),
   });
 }
