@@ -10,6 +10,7 @@ export function useHome() {
   const [markers, setMarkers] = useState<Answer[]>([]);
   const [query, setQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isFetchingAnswers, setIsFetchingAnswers] = useState<boolean>(false);
 
   type Suggestion = {
     id: number;
@@ -58,7 +59,7 @@ export function useHome() {
 
   const handleSuggestionClick = (suggestion: Suggestion, onError?: (error: any) => void) => {
     // console.log(`Clicked suggestion: ${suggestion.name} (ID: ${suggestion.id})`);
-
+    setIsFetchingAnswers(true);
     apiGet({
       url: `items/${suggestion.id}/answers`,
       onData: (data: any) => {
@@ -84,6 +85,9 @@ export function useHome() {
         console.error('Error fetching answers:', error);
         onError?.(error);
         setMarkers([]); // Clear markers on error
+      },
+      onFinally: () => {
+        setIsFetchingAnswers(false);
       }
     });
   }
@@ -93,6 +97,7 @@ export function useHome() {
     markers,
     query,
     isSearching,
+    isFetchingAnswers,
     onSearchChange,
     handleSuggestionClick,
   };

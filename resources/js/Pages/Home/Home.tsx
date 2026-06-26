@@ -24,7 +24,7 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
   const [map, setMap] = useState<Map | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { suggestions, markers, query, isSearching, onSearchChange, handleSuggestionClick } = useHome();
+  const { suggestions, markers, query, isSearching, isFetchingAnswers, onSearchChange, handleSuggestionClick } = useHome();
 
   return (
     <Layout title="Where2Buy - Find where to buy your items!">
@@ -93,6 +93,14 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
             </Autocomplete.Portal>
           </Autocomplete.Root>
         </div>
+        {/* Answer count */}
+        {query.trim() !== '' && (
+          <div className="absolute top-15 left-1 z-500 shadow-lg rounded-lg">
+            <Card className="py-3 px-4">
+              <span className="text-sm text-gray-500">{isFetchingAnswers ? 'Fetching answers...' : `${markers.length} ${markers.length === 1 ? 'answer' : 'answers'} found`}</span>
+            </Card>
+          </div>
+        )}
         {/* Locate button */}
         <div className="absolute bottom-10.5 md:bottom-6.5 right-12 z-500 shadow-lg rounded-lg">
           <Button
