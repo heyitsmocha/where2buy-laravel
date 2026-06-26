@@ -6,6 +6,8 @@ import {
   Popup,
 } from 'react-leaflet';
 
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip'
+
 import MapController from './MapController';
 import type { MapComponentProps } from './map.types';
 
@@ -19,16 +21,23 @@ function LocateButton({ initialCoordinates, initialZoom }: { initialCoordinates:
   const map = useMap();
   return (
     <div className="absolute bottom-10.5 md:bottom-6.5 right-12 z-500 shadow-lg rounded-lg">
-      <Button
-        className="h-8 w-8 active:bg-gray-200"
-        variant="outline"
-        disabled={!map}
-        onClick={() => {
-          map?.setView([initialCoordinates[0], initialCoordinates[1]], initialZoom, { animate: true, duration: 0.5 });
-        }}
-      >
-        <LocateFixed />
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            className="h-8 w-8 active:bg-gray-200 cursor-pointer"
+            variant="outline"
+            disabled={!map}
+            onClick={() => {
+              map?.setView([initialCoordinates[0], initialCoordinates[1]], initialZoom, { animate: true, duration: 0.5 });
+            }}
+          >
+            <LocateFixed />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          Reset Map
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
 }
