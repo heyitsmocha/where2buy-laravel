@@ -36,6 +36,7 @@ export default function MyInquiryDetail({ inquiry }: { inquiry: { data: Inquiry 
               initialCoordinates={[inquiry.data.latitude, inquiry.data.longitude]}
               initialZoom={13}
               markers={inquiry.data.answers}
+              circles={[{ center: [inquiry.data.latitude, inquiry.data.longitude], radius: inquiry.data.search_radius_meters }]}
             />
           </Card>
         </div>
