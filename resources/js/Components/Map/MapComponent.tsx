@@ -4,6 +4,7 @@ import {
   TileLayer,
   Marker,
   Popup,
+  Circle,
 } from 'react-leaflet';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/Components/ui/tooltip'
@@ -72,6 +73,17 @@ export default function MapComponent({ initialCoordinates, initialZoom, circles,
         <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+
+        {circles?.map((circle, index) => (
+          <Circle
+            key={index}
+            center={circle.center}
+            radius={circle.radius}
+            color='blue'
+            fillColor='blue'
+            fillOpacity={0.1}
+          />
+        ))}
 
         <MarkerClusterGroup>
           {markers?.map(marker => {
