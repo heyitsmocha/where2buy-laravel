@@ -1,22 +1,16 @@
 import Layout from '@/Layouts/Layout.js';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useHome } from '@/Pages/Home/useHome.js';
-
-import { type Answer } from '@/Types/types.js';
 
 import MapComponent from '@/Components/Map/MapComponent.js';
 import { Card } from '@/Components/ui/card.js';
 import { Button } from '@/Components/ui/button.js';
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from '@/Components/ui/combobox.js';
 
-import { LocateFixed } from 'lucide-react';
+import { Autocomplete } from '@base-ui/react/autocomplete';
+
+import { LocateFixed, Search, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Map } from 'leaflet';
 
@@ -28,8 +22,9 @@ type HomeProps = {
 export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
   const [circle, setCircle] = useState<{ center: { latitude: number; longitude: number }; radius: number } | null>(null);
   const [map, setMap] = useState<Map | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const { suggestions, markers, onSearchChange, handleSuggestionClick } = useHome();
+  const { suggestions, markers, query, isSearching, onSearchChange, handleSuggestionClick } = useHome();
 
   return (
     <Layout title="Where2Buy - Find where to buy your items!">
@@ -42,24 +37,63 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
           onMapInitialized={setMap}
         />
         {/* Floating Components */}
-        <div className="absolute top-1 left-0 right-0 md:w-1/4 z-500 shadow-lg rounded-lg">
-          <Combobox items={suggestions}>
-            <ComboboxInput
-              placeholder="Search Items..."
-              onChange={onSearchChange}
-              showClear
-              className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg:background/80" />
-            <ComboboxContent>
-              <ComboboxList>
-                {(suggestion) => (
-                  <ComboboxItem key={suggestion.id} value={suggestion.name} onClick={() => handleSuggestionClick(suggestion)}>
-                    {suggestion.name}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
+        {/* Search bar */}
+        <div className="absolute top-1 left-1 right-0 md:w-1/4 z-500 shadow-lg rounded-lg">
+          {/* https://base-ui.com/react/components/autocomplete */}
+          <Autocomplete.Root
+            items={suggestions}
+            itemToStringValue={(suggestion) => suggestion.name}
+            value={query}
+            onValueChange={(value) => onSearchChange(value, (error) => {
+              console.log('Error fetching search results:', error);
+              toast.error('Error fetching search results. Please try again later.');
+            })}
+          >
+            <Card className="py-3">
+              <label className="flex">
+                <Autocomplete.Input placeholder='e.g. Bread' className="flex-1 ms-1 px-2 " ref={inputRef} />
+                {query
+                  ?
+                  <button onClick={() => onSearchChange('')}>
+                    <X className="mx-2 cursor-pointer hover:bg-gray-100 rounded-lg" />
+                  </button>
+                  : <Search className="mx-2" />}
+
+              </label>
+            </Card>
+            <Autocomplete.Portal className="w-full">
+              <Autocomplete.Positioner sideOffset={4} align="start">
+                <Autocomplete.Popup className="bg-white shadow-lg rounded-lg w-full max-h-60 overflow-y-auto">
+                  <Autocomplete.Status className="text-sm text-gray-500 px-2 mt-3">
+                    {query.trim() === '' ? 'Start typing to search' : isSearching ? 'Searching...' : `${suggestions.length} items found.`}
+                  </Autocomplete.Status>
+                  <div className="">
+                    <Autocomplete.List className="mt-2">
+                      {
+                        (suggestion) => (
+                          <div className="hover:bg-gray-200 cursor-pointer">
+                            <Autocomplete.Item key={suggestion.id} value={suggestion} className="p-3" onClick={() => {
+                              handleSuggestionClick(suggestion, error => {
+                                console.log('Error fetching answers:', error);
+                                toast.error('Error fetching answers. Please try again later.');
+                              });
+
+                              inputRef.current?.blur(); // Remove focus from the input after selecting a suggestion to dismiss the keyboard on mobile devices
+                            }}
+                            >
+                              <span>{suggestion.name}</span>
+                            </Autocomplete.Item>
+                          </div>
+                        )
+                      }
+                    </Autocomplete.List>
+                  </div>
+                </Autocomplete.Popup>
+              </Autocomplete.Positioner>
+            </Autocomplete.Portal>
+          </Autocomplete.Root>
         </div>
+        {/* Locate button */}
         <div className="absolute bottom-10.5 md:bottom-6.5 right-12 z-500 shadow-lg rounded-lg">
           <Button
             className="h-8 w-8 active:bg-gray-200"

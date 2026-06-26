@@ -59,7 +59,7 @@ export default function Layout({ title, children }: LayoutProps) {
       <TooltipProvider>
         <SidebarProvider open={isSidebarOpen} onOpenChange={setIsSidebarOpen} >
           <AppSidebar onLoginClick={handleAuthSheetOpen} onLogoutClick={handleLogout} />
-          <main className="bg-muted flex flex-col w-screen h-screen">
+          <main className="root bg-muted flex flex-col w-screen h-screen">
             {/* Full-width header with sidebar trigger and app title */}
             <div className="h-16 bg-white shadow-sm flex items-center px-4 shrink-0">
               <SidebarTrigger variant="outline" />

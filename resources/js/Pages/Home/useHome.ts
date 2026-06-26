@@ -8,6 +8,8 @@ export function useHome() {
   const suggestionsDebounce = useDebounce(1000);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [markers, setMarkers] = useState<Answer[]>([]);
+  const [query, setQuery] = useState<string>("");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
   type Suggestion = {
     id: number;
@@ -19,19 +21,23 @@ export function useHome() {
     item_name: string;
   }
 
-  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value;
-    // console.log('Search query:', query);
+  const onSearchChange = (value: string, onError?: (error: any) => void) => {
+    setIsSearching(true);
+    setQuery(value);
     setMarkers([]); // Clear markers when search query changes
+    // console.log('Search query:', query);
+
+    if (value.trim() === '') {
+      console.log('Query is empty, clearing suggestions and markers.');
+      setSuggestions([]);
+      setIsSearching(false);
+      return;
+    }
 
     // Debounce
     suggestionsDebounce(() => {
-      if (query.trim() === '') {
-        setSuggestions([]);
-        return;
-      }
       apiGet({
-        url: `items/suggestions/?input=${encodeURIComponent(query)}`,
+        url: `items/suggestions/?input=${encodeURIComponent(value)}`,
         onData: (data) => {
           // console.log(`Search results for ${query}:`, data);
           setSuggestions(data.map((item: ItemSuggestionDto) => ({
@@ -41,12 +47,16 @@ export function useHome() {
         },
         onError: (error: any) => {
           console.error('Error fetching search results:', error);
+          onError?.(error);
+        },
+        onFinally: () => {
+          setIsSearching(false);
         }
       });
     });
   }
 
-  const handleSuggestionClick = (suggestion: Suggestion) => {
+  const handleSuggestionClick = (suggestion: Suggestion, onError?: (error: any) => void) => {
     // console.log(`Clicked suggestion: ${suggestion.name} (ID: ${suggestion.id})`);
 
     apiGet({
@@ -72,6 +82,8 @@ export function useHome() {
       },
       onError: (error: any) => {
         console.error('Error fetching answers:', error);
+        onError?.(error);
+        setMarkers([]); // Clear markers on error
       }
     });
   }
@@ -79,6 +91,8 @@ export function useHome() {
   return {
     suggestions,
     markers,
+    query,
+    isSearching,
     onSearchChange,
     handleSuggestionClick,
   };
