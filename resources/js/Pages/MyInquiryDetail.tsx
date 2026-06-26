@@ -21,11 +21,15 @@ export default function MyInquiryDetail({ inquiry }: { inquiry: { data: Inquiry 
 
   return (
     <Layout>
-      <div className="flex flex-col md:flex-row md:items-center gap-4">
-        <div className="md:w-2/3">
-          <h1 className="text-2xl font-bold mb-4">{inquiry.data.item_name}</h1>
-          <p className="text-gray-600">You asked at: {new Date(inquiry.data.created_at).toLocaleString()}</p>
-          <Card className="p-4">
+      {/* Flex for map and answers side-by-side (desktop) or stacked (mobile) */}
+      <div className="p-4 w-full h-full flex flex-col md:flex-row md:items-center gap-4">
+        {/* Map section */}
+        <div className="h-full md:w-2/3 flex flex-col">
+          <div className="flex-none">
+            <h1 className="text-2xl font-bold mb-4">{inquiry.data.item_name}</h1>
+            <p className="text-gray-600">You asked at: {new Date(inquiry.data.created_at).toLocaleString()}</p>
+          </div>
+          <Card className="p-4 shadow hover:shadow-lg transition-shadow overflow-hidden h-[65dvh] md:flex-1">
             {/* <p className="text-gray-800 mt-2">{inquiry.item.description}</p> */}
             <MapComponent
               onMapInitialized={setMap}
@@ -35,9 +39,10 @@ export default function MyInquiryDetail({ inquiry }: { inquiry: { data: Inquiry 
             />
           </Card>
         </div>
+        {/* Answers section */}
         <div className="md:w-1/3">
-          <h2 className="text-xl font-semibold mb-2">Answers</h2>
-          <Card className="p-4">
+          <h2 className="text-xl font-semibold mb-2">Answers ({inquiry.data.answers.length})</h2>
+          <Card className="p-4 shadow hover:shadow-lg transition-shadow">
             {inquiry.data.answers.length === 0 ? (
               <p>No answers yet.</p>
             ) : (
