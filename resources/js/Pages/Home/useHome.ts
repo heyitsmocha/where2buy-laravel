@@ -10,7 +10,7 @@ export function useHome() {
   const [markers, setMarkers] = useState<Answer[]>([]);
   const [query, setQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [isFetchingAnswers, setIsFetchingAnswers] = useState<boolean>(false);
+  const [answerStatus, setAnswerStatus] = useState<'idle' | 'selected' | 'fetching' | 'error'>('idle');
 
   type Suggestion = {
     id: number;
@@ -24,12 +24,22 @@ export function useHome() {
 
   const onSearchChange = (value: string, onError?: (error: any) => void) => {
     setIsSearching(true);
+
+    // If the search query has changed, clear suggestions and markers
+    if (value.trim() !== query.trim()) {
+      setMarkers([]); // Clear markers when search query changes
+
+      if (answerStatus !== 'idle') {
+        setAnswerStatus('idle'); // Reset answer status when search query changes
+      }
+    }
     setQuery(value);
     setMarkers([]); // Clear markers when search query changes
     // console.log('Search query:', query);
 
     if (value.trim() === '') {
       console.log('Query is empty, clearing suggestions and markers.');
+      setAnswerStatus('idle'); // Reset answer status when a new search is initiated
       setSuggestions([]);
       setIsSearching(false);
       return;
@@ -59,7 +69,7 @@ export function useHome() {
 
   const handleSuggestionClick = (suggestion: Suggestion, onError?: (error: any) => void) => {
     // console.log(`Clicked suggestion: ${suggestion.name} (ID: ${suggestion.id})`);
-    setIsFetchingAnswers(true);
+    setAnswerStatus('fetching');
     apiGet({
       url: `items/${suggestion.id}/answers`,
       onData: (data: any) => {
@@ -78,16 +88,14 @@ export function useHome() {
           // console.log('Processed answer:', processedAnswer);
           return processedAnswer;
         }));
-
+        setAnswerStatus('selected');
         setSuggestions([]); // Clear suggestions after selection
       },
       onError: (error: any) => {
         console.error('Error fetching answers:', error);
         onError?.(error);
         setMarkers([]); // Clear markers on error
-      },
-      onFinally: () => {
-        setIsFetchingAnswers(false);
+        setAnswerStatus('error');
       }
     });
   }
@@ -97,7 +105,7 @@ export function useHome() {
     markers,
     query,
     isSearching,
-    isFetchingAnswers,
+    answerStatus,
     onSearchChange,
     handleSuggestionClick,
   };
