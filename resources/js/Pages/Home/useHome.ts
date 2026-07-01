@@ -4,7 +4,39 @@ import useDebounce from 'react-debounced';
 import { apiGet } from '@/util.js';
 import type { Answer } from '@/Types/types.js';
 
-export function useHome() {
+import {
+  Map,
+  type LatLng,
+} from 'leaflet';
+
+export function useHomeMap() {
+  const [circle, setCircle] = useState<{ center: LatLng; radius: number } | null>(null);
+  const mapRef = useRef<Map | null>(null);
+
+  const computeCircle = (m: Map): { center: LatLng; radius: number } => {
+    const center = m.getCenter();
+    const radius = center.distanceTo(m.getBounds().getNorthEast());
+    return { center, radius };
+  };
+
+  const handleMapInitialized = useCallback((m: Map) => {
+    mapRef.current = m;
+    setCircle(computeCircle(m));
+  }, []);
+
+  const handleMoveEnd = useCallback(() => {
+    const m = mapRef.current;
+    if (!m) return;
+    setCircle(computeCircle(m));
+  }, []);
+  return {
+    circle,
+    handleMapInitialized,
+    handleMoveEnd,
+  };
+}
+
+export function useHomeSearch() {
   const suggestionsDebounce = useDebounce(1000);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [markers, setMarkers] = useState<Answer[]>([]);

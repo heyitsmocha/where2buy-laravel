@@ -1,17 +1,15 @@
 import Layout from '@/Layouts/Layout.js';
 
 import { useState, useRef } from 'react';
+import { useHomeMap, useHomeSearch } from '@/Pages/Home/useHome.js';
 import { useHome } from '@/Pages/Home/useHome.js';
 
 import MapComponent from '@/Components/Map/MapComponent.js';
 import { Card } from '@/Components/ui/card.js';
-
 import { Autocomplete } from '@base-ui/react/autocomplete';
-
-import { Search, X } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { Map } from 'leaflet';
+import { Search, X } from 'lucide-react';
 
 type HomeProps = {
   initialCoordinates: { latitude: number; longitude: number };
@@ -19,11 +17,11 @@ type HomeProps = {
 }
 
 export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
-  const [circle, setCircle] = useState<{ center: { latitude: number; longitude: number }; radius: number } | null>(null);
-  const [map, setMap] = useState<Map | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { suggestions, markers, query, isSearching, answerStatus, onSearchChange, handleSuggestionClick } = useHome();
+  const { circle, handleMapInitialized, handleMoveEnd } = useHomeMap();
+  const { suggestions, markers, query, isSearching, answerStatus, onSearchChange, handleSuggestionClick } = useHomeSearch();
+
 
   return (
     <Layout title="Where2Buy - Find where to buy your items!">
@@ -33,7 +31,10 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
           initialZoom={initialZoom}
           // circles={circle ? [circle] : []}
           markers={markers}
-          onMapInitialized={setMap}
+          onMapInitialized={handleMapInitialized}
+          onMoveEnd={() => {
+            handleMoveEnd();
+          }}
         />
         {/* Floating Components */}
         {/* Search bar */}
