@@ -2,7 +2,7 @@ import Layout from '@/Layouts/Layout.js';
 
 import { useState, useRef } from 'react';
 import { useHomeMap, useHomeSearch } from '@/Pages/Home/useHome.js';
-import { useHome } from '@/Pages/Home/useHome.js';
+import useDebounce from 'react-debounced';
 
 import MapComponent from '@/Components/Map/MapComponent.js';
 import { Card } from '@/Components/ui/card.js';
@@ -22,6 +22,10 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
   const { circle, handleMapInitialized, handleMoveEnd } = useHomeMap();
   const { suggestions, markers, query, isSearching, answerStatus, onSearchChange, handleSuggestionClick } = useHomeSearch();
 
+  const selectedSuggestionRef = useRef<{ id: number; name: string } | null>(null);
+  const [isSearchAfterMoveEnabled, setIsSearchAfterMoveEnabled] = useState(false);
+
+  const nearbyAnswerFetchDebounce = useDebounce(500); // Debounce for 500ms to avoid excessive API calls
 
   return (
     <Layout title="Where2Buy - Find where to buy your items!">
@@ -33,7 +37,21 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
           markers={markers}
           onMapInitialized={handleMapInitialized}
           onMoveEnd={() => {
-            handleMoveEnd();
+            const moveEndCircle = handleMoveEnd();
+            if (isSearchAfterMoveEnabled) {
+              nearbyAnswerFetchDebounce(() => {
+                if (selectedSuggestionRef.current && moveEndCircle) {
+                  handleSuggestionClick(
+                    selectedSuggestionRef.current,
+                    moveEndCircle.center, moveEndCircle.radius,
+                    error => {
+                      console.error('Error fetching answers:', error);
+                      toast.error('Error fetching answers. Please try again later.');
+                    });
+
+                }
+              });
+            }
           }}
         />
         {/* Floating Components */}
@@ -44,17 +62,31 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
             items={suggestions}
             itemToStringValue={(suggestion) => suggestion.name}
             value={query}
-            onValueChange={(value) => onSearchChange(value, (error) => {
-              console.log('Error fetching search results:', error);
-              toast.error('Error fetching search results. Please try again later.');
-            })}
+            onValueChange={
+              (value) => {
+                onSearchChange(
+                  value,
+                  (error) => {
+                    console.error('Error fetching search results:', error);
+                    toast.error('Error fetching search results. Please try again later.');
+                  }
+                );
+
+                // Clear the selected suggestion when the search query changes
+                if (answerStatus !== 'idle') {
+                  selectedSuggestionRef.current = null;
+                }
+              }}
           >
             <Card className="py-3">
               <label className="flex">
                 <Autocomplete.Input placeholder='e.g. Bread' className="flex-1 ms-1 px-2 " ref={inputRef} />
                 {query
                   ?
-                  <button onClick={() => onSearchChange('')}>
+                  <button onClick={() => {
+                    selectedSuggestionRef.current = null; // Clear the selected suggestion when clearing the search
+                    onSearchChange('');
+                  }}>
                     <X className="mx-2 cursor-pointer hover:bg-gray-100 rounded-lg" />
                   </button>
                   : <Search className="mx-2" />}
@@ -73,11 +105,12 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
                         (suggestion) => (
                           <div className="hover:bg-gray-200 cursor-pointer">
                             <Autocomplete.Item key={suggestion.id} value={suggestion} className="p-3" onClick={() => {
-                              handleSuggestionClick(suggestion, error => {
-                                console.log('Error fetching answers:', error);
-                                toast.error('Error fetching answers. Please try again later.');
-                              });
-
+                              if (circle) {
+                                selectedSuggestionRef.current = suggestion;
+                                handleSuggestionClick(suggestion, circle.center, circle.radius, error => {
+                                  toast.error('Error fetching answers. Please try again later.');
+                                });
+                              }
                               inputRef.current?.blur(); // Remove focus from the input after selecting a suggestion to dismiss the keyboard on mobile devices
                             }}
                             >
@@ -92,6 +125,17 @@ export default function Home({ initialCoordinates, initialZoom }: HomeProps) {
               </Autocomplete.Positioner>
             </Autocomplete.Portal>
           </Autocomplete.Root>
+        </div>
+        {/* Search after move checkbox */}
+        <div className="absolute top-15 w-max md:top-1 left-1/2 transform -translate-x-1/2 z-500 shadow-lg rounded-lg">
+          <Card className="py-3 px-4">
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" checked={isSearchAfterMoveEnabled} onChange={(e) => {
+                setIsSearchAfterMoveEnabled(e.target.checked);
+              }} />
+              <span className="text-sm text-gray-500">Search when I move the map</span>
+            </label>
+          </Card>
         </div>
         {/* Answer count */}
         {answerStatus !== 'idle' && (

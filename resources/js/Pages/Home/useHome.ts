@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import useDebounce from 'react-debounced';
 
 import { apiGet } from '@/util.js';
@@ -24,10 +24,15 @@ export function useHomeMap() {
     setCircle(computeCircle(m));
   }, []);
 
+  /**
+   * Recomputes the circle when map move ends. Returns the circle to allow the frontend to use the latest circle instead of relying on the state which may not be updated immediately.
+   */
   const handleMoveEnd = useCallback(() => {
     const m = mapRef.current;
     if (!m) return;
-    setCircle(computeCircle(m));
+    const circle = computeCircle(m);
+    setCircle(circle);
+    return circle;
   }, []);
   return {
     circle,
@@ -66,13 +71,13 @@ export function useHomeSearch() {
       }
     }
     setQuery(value);
-    setMarkers([]); // Clear markers when search query changes
     // console.log('Search query:', query);
 
+    // If the query is empty, clear suggestions and markers and return early
     if (value.trim() === '') {
       console.log('Query is empty, clearing suggestions and markers.');
-      setAnswerStatus('idle'); // Reset answer status when a new search is initiated
       setSuggestions([]);
+      setMarkers([]);
       setIsSearching(false);
       return;
     }
@@ -99,11 +104,11 @@ export function useHomeSearch() {
     });
   }
 
-  const handleSuggestionClick = (suggestion: Suggestion, onError?: (error: any) => void) => {
+  const handleSuggestionClick = (suggestion: Suggestion, center: LatLng, radius: number, onError?: (error: any) => void) => {
     // console.log(`Clicked suggestion: ${suggestion.name} (ID: ${suggestion.id})`);
     setAnswerStatus('fetching');
     apiGet({
-      url: `items/${suggestion.id}/answers`,
+      url: `items/${suggestion.id}/nearby-answers?latitude=${center.lat}&longitude=${center.lng}&range=${radius}`,
       onData: (data: any) => {
         // console.log(`Answers for item ${suggestion.name}:`, data);
         setMarkers(data.map((answer: any) => {
