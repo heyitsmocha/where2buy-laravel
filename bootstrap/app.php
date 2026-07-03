@@ -17,6 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
         ]);
 
+        $middleware->redirectGuestsTo('/');
+
         $middleware->encryptCookies(except: [
             'sidebar_state',
         ]);
