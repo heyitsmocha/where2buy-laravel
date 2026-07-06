@@ -2,15 +2,15 @@
 
 One of my university projects, originally wrote in pure PHP remade in Laravel.
 
-A crowdsourced mobile app to where users can post a question on where they could find an item, and other users can answer with the location.
+A crowdsourcing mobile app where users can inquire where they could purchase an item, and other users can respond with the location.
 
 Technical Features:
 - Authentication: Sanctum for API and the SPA frontend
-- Database: MySQL database with geospatial features
-- Web Interface: Inertia + React, Shadcn + Tailwind
-- Leaflet: OpenStreetMap integration with Leaflet
+- Database: MySQL with geospatial features
+- Web Interface: Inertia + React, Shadcn, Base UI, Tailwind
+- Map: OpenStreetMap integration with Leaflet
 
-This project serves as the backend for [https://github.com/zemu-familia/where2buy-flutter].
+This project serves as the backend for [https://github.com/heyitsmocha/where2buy-flutter].
 
 ## Demo
 <details>
@@ -35,5 +35,69 @@ https://github.com/user-attachments/assets/50ffa989-7ecc-4174-bc9c-9466ef3646db
 https://github.com/user-attachments/assets/dc5b746e-4740-4644-9e60-91f051f79f6b
 </details>
 
+## Requirements
+- This project was tested on PHP 8.2.25 and MySQL 8.0.30.
+- MySQL 8.0+ is required for geospatial data compatibility.
+  
 ## Setup
-> This section will be expanded upon soon.
+1. Clone the repository:
+   ```
+   git clone https://github.com/heyitsmocha/where2buy-laravel.git
+   cd where2buy-laravel
+   ```
+2. Install PHP dependencies:
+   ```
+   composer install
+   ```
+3. Install Node dependencies:
+   ```
+   npm install
+   ```
+4. Copy the environment file:
+   ```
+   cp .env.example .env
+   ```
+   or on Windows:
+   ```
+   copy .env.example .env
+   ```
+5. Generate the application key:
+   ```
+   php artisan key:generate
+   ```
+6. Migrate the database:
+   ```
+   php artisan migrate
+   ```
+7. (Optional) Seed the database:
+   ```
+   php artisan db:seed --class=DatabaseSeeder
+   ```
+    This will create a user with the following credentials:
+   - Email: `test@example.com`
+   - Password `password`
+
+9. Start the development server:
+   ```
+   composer run dev
+   ```
+
+## Accessing the Backend
+
+On the backend host machine, the application is available at:
+```
+http://localhost:8000
+```
+
+On other devices on the same network:
+- Web application:
+  ```
+  http://<host-pc-local-ip>:8000
+  ```
+- Flutter app:
+    - Set `API_BASE_URL` in the Flutter project's `.env` file to
+      ```
+      http://<host-pc-local-ip>:8000/api/
+      ```
+    - If the backend is hosted on a DHCP-enabled network, the machine's IP address may change over time (e.g. after reconnecting to the network or restarting the router). If the Flutter app can no longer connect, verify the host machine's current local IP address (e.g. `192.168.x.x` or `10.x.x.x`) and update `API_BASE_URL` if needed.
+    - For a permanent setup, consider configuring a DHCP reservation or assigning a static IP address to the backend machine.
