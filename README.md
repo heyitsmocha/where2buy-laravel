@@ -1,16 +1,19 @@
 # Where2Buy (Laravel Backend)
 
-One of my university projects, originally wrote in pure PHP remade in Laravel.
+A crowdsourced mobile application where users can ask where to find a specific item, and other users can respond with locations and information.
 
-A crowdsourcing mobile app where users can inquire where they could purchase an item, and other users can respond with the location.
+Originally developed as a university project using pure PHP and Java (native Android), this version was rebuilt with Laravel as a REST API backend and a React-based web interface. The API is shared between the React web application and the Flutter mobile application.
 
-Technical Features:
-- Authentication: Sanctum for API and the SPA frontend
-- Database: MySQL with geospatial features
-- Web Interface: Inertia + React, Shadcn, Base UI, Tailwind
-- Map: OpenStreetMap integration with Leaflet
+This project consists of two applications:
+- Laravel + React web application (this repository)
+- Flutter mobile application [https://github.com/heyitsmocha/where2buy-flutter]
 
-This project serves as the backend for [https://github.com/heyitsmocha/where2buy-flutter].
+## Technical Features
+- Architecture: REST API consumed by both web and mobile clients
+- Authentication: Laravel Sanctum for API authentication and SPA session authentication
+- Database: MySQL with geospatial data support for location-based queries
+- Web Interface: Inertia.js + React, Shadcn, Base UI, Tailwind CSS
+- Maps: OpenStreetMap integration with Leaflet
 
 ## Demo
 <details>
